@@ -11,13 +11,14 @@ public class PushDown {
     private Stack<Integer> statementStack;
     private Stack<StackItems> automataStack = new Stack<>();
     private State state;
+    private boolean insideP;
 
     public PushDown(){
         this.state = State.START;
         automataStack.push(StackItems.EMPTY);
     }
 
-    public boolean readInput(String s) {
+    public boolean validInput(String s) {
         //Get statement and split it due to the parenthesis
         String[] splitStatement = s.split("(?<=\\()|(?=\\))"); // Breaks (A into ( A, or, B) into B )
 
@@ -32,11 +33,11 @@ public class PushDown {
         while (scanner.hasNext()){
             Input input = Input.formInput(this.state, scanner.next(),automataStack.peek());
             if (Transition.containsInput(input)){
-                System.out.println(this.state);
+                System.out.println(input.getState() + " " + input.getItem() + " " + input.getId());
                 makeTransition(input);
             }
             else {
-                throw new RuntimeException(String.format("Transition does not exist: %s %s", input.getId(), input.getState()));
+                throw new RuntimeException(String.format("Transition does not exist: %s %s %s", input.getId(), input.getState(), input.getItem()));
             }
         }
 
@@ -78,5 +79,73 @@ public class PushDown {
                 this.automataStack.pop();
             }
         }
+        else if (transition.getBehavior().getInput().getItem() == transition.getBehavior().getOutput().getItem() &&
+        transition.getBehavior().getInput().getItem() == StackItems.PARENTHESIS
+        && transition.getBehavior().getInput().getId().equalsIgnoreCase("(")) {
+            this.automataStack.push(StackItems.PARENTHESIS);
+        }
+        else if (transition.getBehavior().getInput().getItem() == transition.getBehavior().getOutput().getItem() &&
+        transition.getBehavior().getInput().getItem() == StackItems.PARENTHESIS
+        && transition.getBehavior().getInput().getId().equalsIgnoreCase(")")) {
+            this.automataStack.pop();
+        }
     }
+
+    public boolean createStatements(String s){
+        //Get statement and split it due to the parenthesis
+        String[] splitStatement = s.split("(?<=\\()|(?=\\))"); // Breaks (A into ( A, or, B) into B )
+
+        //Create a string that can be read by a Scanner
+        String splitString = "";
+        for (String s1 : splitStatement) {
+            splitString = splitString + " " + s1;
+        }
+
+        Scanner scanner = new Scanner(splitString);
+        while (scanner.hasNext()) {
+            Statement currStatement;
+            String current = scanner.next();
+            if (isOperator(current)) {
+                currStatement = createStatement(current);
+            }
+            else if (!isOperator(current) && !s.equalsIgnoreCase(")") && !s.equalsIgnoreCase("(")){
+                currStatement = SingleVarStatement.of(current);
+            }
+            else if (current.equalsIgnoreCase("(")){
+                insideP = true;
+            }
+            else {
+                insideP = false;
+            }
+        }
+
+
+        return true;
+    }
+
+    private boolean isOperator(String s){
+        return Operator.contains(s);
+    }
+
+    private Statement createStatement(String s){
+        if (s.equalsIgnoreCase(Operator.NOT.toString())){
+            return NotStatement.of();
+        }
+        else if (s.equalsIgnoreCase(Operator.AND.toString())){
+            return AndStatement.of();
+        }
+        else if (s.equalsIgnoreCase(Operator.OR.toString())){
+            return OrStatement.of();
+        }
+        else if (s.equalsIgnoreCase(Operator.XOR.toString())){
+            return XorStatement.of();
+        }
+        else if (s.equalsIgnoreCase(Operator.IFF.toString())){
+            return IffStatement.of();
+        }
+        else {
+            return IfStatement.of();
+        }
+    }
+
 }

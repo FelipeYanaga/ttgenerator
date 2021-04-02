@@ -2,6 +2,7 @@ package org.acme;
 
 import org.acme.pda.*;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -165,35 +166,5 @@ public class NLPTest {
                 Input.formInput(State.ID,"id",StackItems.PARENTHESIS).hashCode());
     }
 
-    @Test
-    public void readInput(){
-        PushDown pda = new PushDown();
-        assert(pda.readInput("id and id"));
-    }
-
-    @Test
-    public void readInputSimpleP(){
-        PushDown pda = new PushDown();
-        assert(pda.readInput("(id and id)"));
-    }
-
-    @Test
-    public void pushParenthesis(){ //See everything through with the parenthesis stuff
-        PushDown pda = new PushDown();
-        pda.readInput("(");
-        assert(pda.getAutomataStack().peek().equals(StackItems.PARENTHESIS));
-    }
-
-    @Test
-    public void popParenthesis(){
-        PushDown pda = new PushDown();
-        assert(pda.readInput("(id)"));
-    }
-
-    @Test
-    public void readInputXor(){
-        PushDown pda = new PushDown();
-        assert(pda.readInput("(id xor id)"));
-    }
 }
 

@@ -30,6 +30,14 @@ public enum Transition {
             Input.formInput(State.OPERATOR, "not", StackItems.EMPTY),
             Output.formOutput(State.START, StackItems.EMPTY))
             ),
+    NOT_START_P(Tuple.formTuple(
+            Input.formInput(State.START, "not", StackItems.PARENTHESIS),
+            Output.formOutput(State.START, StackItems.PARENTHESIS))
+    ),
+    NOT_OPERATOR_P(Tuple.formTuple(
+            Input.formInput(State.OPERATOR, "not", StackItems.PARENTHESIS),
+            Output.formOutput(State.START, StackItems.PARENTHESIS))
+    ),
 
     //Parenthesis Transitions
     PARENTHESIS_OPEN_E(Tuple.formTuple( // If you get an parenthesis at the beginning
@@ -44,8 +52,23 @@ public enum Transition {
             Input.formInput(State.OPERATOR, "(", StackItems.EMPTY),
             Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS)
     )),
+    PARENTHESIS_DOUBLE_OPEN_OP(Tuple.formTuple(
+            Input.formInput(State.OPERATOR, "(", StackItems.PARENTHESIS),
+            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS)
+    )),
+    PARENTHESIS_DOUBLE_PARENTHESIS(Tuple.formTuple(
+            Input.formInput(State.START, "(", StackItems.PARENTHESIS),
+            Output.formOutput(State.START, StackItems.PARENTHESIS)
+    )),
+//    PARENTHESIS_CLOSE_DOUBLE_PARENTHESIS(Tuple.formTuple(
+//            Input.formInput(State.ID, ")", StackItems.PARENTHESIS),
+//            Output.formOutput(State.ID, StackItems.EMPTY)
+//    )),
 
-    //Operator Transitions
+
+    /*
+    Operator Transitions with and without parenthesis
+     */
     AND_E(Tuple.formTuple(
             Input.formInput(State.ID, "and", StackItems.EMPTY),
             Output.formOutput(State.OPERATOR, StackItems.EMPTY))
@@ -58,18 +81,34 @@ public enum Transition {
             Input.formInput(State.ID, "or", StackItems.EMPTY),
             Output.formOutput(State.OPERATOR, StackItems.EMPTY))
         ),
+    OR_P(Tuple.formTuple(
+            Input.formInput(State.ID, "or", StackItems.PARENTHESIS),
+            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS))
+    ),
     IFF_E(Tuple.formTuple(
             Input.formInput(State.ID, "iff", StackItems.EMPTY),
             Output.formOutput(State.OPERATOR, StackItems.EMPTY))
         ),
+    IFF_P(Tuple.formTuple(
+            Input.formInput(State.ID, "iff", StackItems.PARENTHESIS),
+            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS))
+    ),
     IF_E(Tuple.formTuple(
             Input.formInput(State.ID, "if", StackItems.EMPTY),
             Output.formOutput(State.OPERATOR, StackItems.EMPTY))
         ),
+    IF_P(Tuple.formTuple(
+            Input.formInput(State.ID, "if", StackItems.PARENTHESIS),
+            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS))
+    ),
     XOR_E(Tuple.formTuple(
             Input.formInput(State.ID, "xor", StackItems.EMPTY),
             Output.formOutput(State.OPERATOR, StackItems.EMPTY))
-    );
+    ),
+    XOR_P(Tuple.formTuple(
+            Input.formInput(State.ID, "xor", StackItems.PARENTHESIS),
+            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS))
+            );
 
     Transition(Tuple tuple) {
         this.behavior = tuple;
