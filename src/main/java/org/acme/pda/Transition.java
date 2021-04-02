@@ -7,65 +7,68 @@ import java.util.stream.Collectors;
 
 public enum Transition {
     //ID Transitions
-    ID_E(Tuple.formTuple(
+    START_ID(Tuple.formTuple(
             Input.formInput(State.START, "id", StackItems.EMPTY),
             Output.formOutput(State.ID, StackItems.EMPTY))),
-    ID_O(Tuple.formTuple(
-            Input.formInput(State.START, "id", StackItems.OPERATOR),
+    OPERATOR_ID(Tuple.formTuple(
+            Input.formInput(State.OPERATOR, "id", StackItems.EMPTY),
             Output.formOutput(State.ID, StackItems.EMPTY))),
+    PARENTHESIS_ID(Tuple.formTuple(
+            Input.formInput(State.START,"id", StackItems.PARENTHESIS),
+            Output.formOutput(State.ID, StackItems.PARENTHESIS))
+    ),
+    OPERATOR_ID_P(Tuple.formTuple(
+            Input.formInput(State.OPERATOR, "id", StackItems.PARENTHESIS),
+            Output.formOutput(State.ID, StackItems.PARENTHESIS))),
 
     //Not transitions
-    NOT_E(Tuple.formTuple(
+    START_NOT(Tuple.formTuple(
             Input.formInput(State.START, "not", StackItems.EMPTY),
-            Output.formOutput(State.NOT_STATE, StackItems.NOT_OPERATOR))
+            Output.formOutput(State.START, StackItems.EMPTY))
             ),
-    NOT_O(Tuple.formTuple(
-            Input.formInput(State.START, "not", StackItems.OPERATOR),
-            Output.formOutput(State.NOT_STATE, StackItems.OPERATOR))
+    OPERATOR_NOT(Tuple.formTuple(
+            Input.formInput(State.OPERATOR, "not", StackItems.EMPTY),
+            Output.formOutput(State.START, StackItems.EMPTY))
             ),
-    NOT_N(Tuple.formTuple(
-            Input.formInput(State.NOT_STATE, "not", StackItems.EMPTY),
-            Output.formOutput(State.NOT_STATE, StackItems.EMPTY))
-    ),
-    ID_N(Tuple.formTuple(
-            Input.formInput(State.NOT_STATE, "id", StackItems.NOT_OPERATOR),
-            Output.formOutput(State.ID, StackItems.EMPTY))
-    ),
 
     //Parenthesis Transitions
     PARENTHESIS_OPEN_E(Tuple.formTuple( // If you get an parenthesis at the beginning
             Input.formInput(State.START, "(", StackItems.EMPTY),
-            Output.formOutput(State.ID, StackItems.PARENTHESIS))
+            Output.formOutput(State.START, StackItems.PARENTHESIS))
             ),
     PARENTHESIS_CLOSE_ID(Tuple.formTuple( // Closing the parenthesis at ID, because you always close it after an ID
             Input.formInput(State.ID, ")", StackItems.PARENTHESIS),
-            Output.formOutput(State.START, StackItems.EMPTY))
+            Output.formOutput(State.ID, StackItems.EMPTY))
             ),
-    PARENTHESIS_OPEN_N(Tuple.formTuple(
-            Input.formInput(State.NOT_STATE, "(", StackItems.EMPTY),
-            Output.formOutput(State.NOT_STATE, StackItems.PARENTHESIS)
+    PARENTHESIS_OPEN_OP(Tuple.formTuple(
+            Input.formInput(State.OPERATOR, "(", StackItems.EMPTY),
+            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS)
     )),
 
     //Operator Transitions
     AND_E(Tuple.formTuple(
             Input.formInput(State.ID, "and", StackItems.EMPTY),
-            Output.formOutput(State.START, StackItems.OPERATOR))
+            Output.formOutput(State.OPERATOR, StackItems.EMPTY))
         ),
+    AND_P(Tuple.formTuple(
+            Input.formInput(State.ID, "and", StackItems.PARENTHESIS),
+            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS))
+    ),
     OR_E(Tuple.formTuple(
             Input.formInput(State.ID, "or", StackItems.EMPTY),
-            Output.formOutput(State.START, StackItems.OPERATOR))
+            Output.formOutput(State.OPERATOR, StackItems.EMPTY))
         ),
     IFF_E(Tuple.formTuple(
             Input.formInput(State.ID, "iff", StackItems.EMPTY),
-            Output.formOutput(State.START, StackItems.OPERATOR))
+            Output.formOutput(State.OPERATOR, StackItems.EMPTY))
         ),
     IF_E(Tuple.formTuple(
             Input.formInput(State.ID, "if", StackItems.EMPTY),
-            Output.formOutput(State.START, StackItems.OPERATOR))
+            Output.formOutput(State.OPERATOR, StackItems.EMPTY))
         ),
     XOR_E(Tuple.formTuple(
             Input.formInput(State.ID, "xor", StackItems.EMPTY),
-            Output.formOutput(State.START, StackItems.OPERATOR))
+            Output.formOutput(State.OPERATOR, StackItems.EMPTY))
     );
 
     Transition(Tuple tuple) {
@@ -91,10 +94,7 @@ public enum Transition {
     private static final Map<Input, Transition> INPUTS_TO_TRANSITION = Arrays.stream(values())
             .collect(Collectors.toUnmodifiableMap(o -> o.getBehavior().getInput(), o -> o));
 
-    /*
-    Implement a map to get the values in O(1) and not O(n) time, but this might be acceptable
-    to create later.
-     */
+
     public static boolean contains(Transition transition) {
         for (Transition t : TRANSITIONS) {
             if (t.equals(transition)) {

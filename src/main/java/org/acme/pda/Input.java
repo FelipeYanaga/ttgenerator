@@ -3,9 +3,9 @@ package org.acme.pda;
 import java.util.Objects;
 
 public class Input {
-    private State state;
-    private String id;
-    private StackItems item;
+    private final State state;
+    private final String id;
+    private final StackItems item;
 
     public Input(State state, String id, StackItems item) {
         this.state = state;
@@ -13,39 +13,36 @@ public class Input {
         this.item = item;
     }
 
-    public static Input formInput(State state, String id, StackItems item) { return new Input(state, id, item); }
-
-    public void setState(State state) {this.state = state;}
-
-    public void setId(String id) {this.id = id;}
-
-    public void setItem(StackItems item) {this.item = item;}
-
-    public Input setValues(State state, String id, StackItems item) {
-        setId(id);
-        setItem(item);
-        setState(state);
-        return this;
+    public static Input formInput(State state, String id, StackItems item) {
+        return new Input(state, id, item);
     }
 
-    public StackItems getItem(){return this.item;}
+    public StackItems getItem() {
+        return this.item;
+    }
 
-    public String getId(){return this.id;}
+    public String getId() {
+        return this.id;
+    }
 
-    public State getState(){return this.state;}
-
-    @Override
-    public boolean equals(Object o){
-        if (!(o instanceof Input))
-            return false;
-        Input input = (Input) o;
-        return this.state.equals(input.getState()) &&
-        this.id.equals(input.getId()) &&
-        this.item.equals(input.getItem());
+    public State getState() {
+        return this.state;
     }
 
     @Override
-    public int hashCode(){
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (o instanceof Input) {
+            Input other = (Input) o;
+            return Objects.equals(this.state, other.state) &&
+                    Objects.equals(this.id, other.id)
+                    && Objects.equals(this.item, other.item);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
         return Objects.hash(state, id, item);
     }
 }

@@ -10,57 +10,60 @@ public class PushDown {
      */
     private Stack<Integer> statementStack;
     private Stack<StackItems> automataStack = new Stack<>();
-    private State state = State.START;
+    private State state;
 
     public PushDown(){
+        this.state = State.START;
         automataStack.push(StackItems.EMPTY);
     }
 
-    public boolean readInput(String input) {
+    public boolean readInput(String s) {
         //Get statement and split it due to the parenthesis
-        String[] splitStatement = input.split("(?<=\\()|(?=\\))"); // Breaks (A into ( A, or, B) into B )
+        String[] splitStatement = s.split("(?<=\\()|(?=\\))"); // Breaks (A into ( A, or, B) into B )
 
         //Create a string that can be read by a Scanner
         String splitString = "";
-        for (String s : splitStatement) {
-            splitString = splitString + " " + s;
+        for (String s1 : splitStatement) {
+            splitString = splitString + " " + s1;
         }
 
         //PDA starts to read the input
         Scanner scanner = new Scanner(splitString);
-        Input transitionInput = Input.formInput(this.state, "",automataStack.peek());
         while (scanner.hasNext()){
-            if (Transition.containsInput(transitionInput.setValues(this.state, scanner.next(), automataStack.peek()))){
-                makeTransition(Transition.getTransition(transitionInput));
+            Input input = Input.formInput(this.state, scanner.next(),automataStack.peek());
+            if (Transition.containsInput(input)){
+                System.out.println(this.state);
+                makeTransition(input);
             }
             else {
-                return false;
+                throw new RuntimeException(String.format("Transition does not exist: %s %s", input.getId(), input.getState()));
             }
         }
 
-        return true;
+        return isAccepted();
     }
 
-    private void setStates(State state) { this.state = state;}
+    private void makeTransition(Input input) {
+        if (Transition.containsInput(input)) {
+            setState(Transition.getTransition(input).getBehavior().getOutput().getState());
+            Transition transition = Transition.getTransition(input);
+            updateStack(transition);
+        }
+    }
+
+    private void setState(State newState) { this.state = newState;}
 
     private State getState(State state) { return this.state;}
 
+    public Stack<StackItems> getAutomataStack() { return this.automataStack;}
 
+    private boolean isAccepted() {
+        return this.state == State.ID &&
+                this.automataStack.peek() == StackItems.EMPTY;
+    }
     /*
-    Now, you have to think about the states as well, it only ends if it's an accepting state and the stack is empty
-    Simply having transitions for all of the Strings is not enough, but this does show that the transitions are being
-    applied correctly.
-
     Other point to consider is that may not be necessarily empty for state to continue.
      */
-    private void makeTransition(Transition transition) {
-        Output output = transition.getBehavior().getOutput();
-        setStates(output.getState());
-        updateStack(transition);
-        /*
-        Some transitions don't need to be in a certain state
-         */
-    }
 
 
     /*

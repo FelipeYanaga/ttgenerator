@@ -1,9 +1,6 @@
 package org.acme;
 
-import org.acme.pda.Input;
-import org.acme.pda.StackItems;
-import org.acme.pda.State;
-import org.acme.pda.Transition;
+import org.acme.pda.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -27,11 +24,6 @@ public class NLPTest {
             splitInput[i] = splitInput[i].trim();
         }
         assert(Arrays.equals(expected, splitInput));
-    }
-
-    @Test
-    public void splitParenthesis(){
-        String input = "A iff (not A and B)";
     }
 
     @Test
@@ -77,26 +69,26 @@ public class NLPTest {
 
     @Test
     public void containsTransitionTrue(){
-        assert(Transition.contains(Transition.ID_N));
+        assert(Transition.contains(Transition.START_ID));
     }
 
     @Test
     public void getTransition(){
         Input input = Input.formInput(State.START, "id", StackItems.EMPTY);
-        assert(Transition.ID_E == Transition.getTransition(input));
+        assert(Transition.START_ID == Transition.getTransition(input));
     }
 
     @Test
     public void equals(){
         Input input = Input.formInput(State.START,"id",StackItems.EMPTY);
-        assert(Transition.ID_E.equals(Transition.getTransition(input)));
+        assert(Transition.START_ID.equals(Transition.getTransition(input)));
     }
 
     @Test
     public void inputEqualityRightSide(){
         Input input = Input.formInput(State.START,"id",StackItems.EMPTY);
         Input input1 = Input.formInput(State.START,"id",StackItems.EMPTY);
-        assert(input.equals(Transition.ID_E.getBehavior().getInput()));
+        assert(input.equals(Transition.START_ID.getBehavior().getInput()));
     }
 
     @Test
@@ -135,15 +127,15 @@ public class NLPTest {
     @Test
     public void pushItem(){
         Stack<StackItems> stack = new Stack<>();
-        stack.push(Transition.NOT_E.getBehavior().getOutput().getItem());
-        assert(stack.peek().equals(StackItems.NOT_OPERATOR));
+        stack.push(Transition.PARENTHESIS_OPEN_E.getBehavior().getOutput().getItem());
+        assert(stack.peek().equals(StackItems.PARENTHESIS));
     }
 
     @Test
     public void popItem(){
         Stack<StackItems> stack = new Stack<>();
         stack.push(StackItems.EMPTY);
-        stack.push(Transition.NOT_E.getBehavior().getOutput().getItem());
+        stack.push(Transition.PARENTHESIS_OPEN_E.getBehavior().getOutput().getItem());
         stack.pop();
         assert(stack.peek().equals(StackItems.EMPTY));
     }
@@ -171,6 +163,37 @@ public class NLPTest {
     public void InputHashFalseState(){
         Assertions.assertFalse(Input.formInput(State.START, "id", StackItems.EMPTY).hashCode() ==
                 Input.formInput(State.ID,"id",StackItems.PARENTHESIS).hashCode());
+    }
+
+    @Test
+    public void readInput(){
+        PushDown pda = new PushDown();
+        assert(pda.readInput("id and id"));
+    }
+
+    @Test
+    public void readInputSimpleP(){
+        PushDown pda = new PushDown();
+        assert(pda.readInput("(id and id)"));
+    }
+
+    @Test
+    public void pushParenthesis(){ //See everything through with the parenthesis stuff
+        PushDown pda = new PushDown();
+        pda.readInput("(");
+        assert(pda.getAutomataStack().peek().equals(StackItems.PARENTHESIS));
+    }
+
+    @Test
+    public void popParenthesis(){
+        PushDown pda = new PushDown();
+        assert(pda.readInput("(id)"));
+    }
+
+    @Test
+    public void readInputXor(){
+        PushDown pda = new PushDown();
+        assert(pda.readInput("(id xor id)"));
     }
 }
 
