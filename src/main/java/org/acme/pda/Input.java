@@ -1,5 +1,7 @@
 package org.acme.pda;
 
+import java.util.Objects;
+
 public class Input {
     private State state;
     private String id;
@@ -32,9 +34,18 @@ public class Input {
 
     public State getState(){return this.state;}
 
-    public boolean equals(Input input){
+    @Override
+    public boolean equals(Object o){
+        if (!(o instanceof Input))
+            return false;
+        Input input = (Input) o;
         return this.state.equals(input.getState()) &&
         this.id.equals(input.getId()) &&
         this.item.equals(input.getItem());
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(state, id, item);
     }
 }

@@ -93,10 +93,38 @@ public class NLPTest {
     }
 
     @Test
-    public void inputEquality(){
+    public void inputEqualityRightSide(){
         Input input = Input.formInput(State.START,"id",StackItems.EMPTY);
         Input input1 = Input.formInput(State.START,"id",StackItems.EMPTY);
         assert(input.equals(Transition.ID_E.getBehavior().getInput()));
+    }
+
+    @Test
+    public void inputEqualityLeftSide(){
+        Input input = Input.formInput(State.START,"id",StackItems.EMPTY);
+        Input input1 = Input.formInput(State.START,"id",StackItems.EMPTY);
+        assert (input.equals(input1));
+    }
+
+    @Test
+    public void inputEqualityOtherSide(){
+        Input input = Input.formInput(State.START,"id",StackItems.EMPTY);
+        Input input1 = Input.formInput(State.START,"id",StackItems.EMPTY);
+        assert (input1.equals(input));
+    }
+
+    @Test
+    public void inputEqualityFalse(){
+        Input input = Input.formInput(State.ID,"id",StackItems.EMPTY);
+        Input input1 = Input.formInput(State.START,"id",StackItems.EMPTY);
+        Assertions.assertFalse(input.equals(input1));
+    }
+
+    @Test
+    public void objectEquality(){
+        Input input = Input.formInput(State.ID,"id",StackItems.EMPTY);
+        Input input1 = Input.formInput(State.ID,"id",StackItems.EMPTY);
+        assert(input.equals(input1));
     }
 
     @Test
@@ -118,6 +146,31 @@ public class NLPTest {
         stack.push(Transition.NOT_E.getBehavior().getOutput().getItem());
         stack.pop();
         assert(stack.peek().equals(StackItems.EMPTY));
+    }
+
+    @Test
+    public void InputHashTrue(){
+        assert(Input.formInput(State.START, "id", StackItems.EMPTY).hashCode() ==
+                Input.formInput(State.START,"id",StackItems.EMPTY).hashCode()
+        );
+    }
+
+    @Test
+    public void InputHashFalse(){
+        Assertions.assertFalse(Input.formInput(State.START, "id", StackItems.EMPTY).hashCode() ==
+                Input.formInput(State.START,"id",StackItems.PARENTHESIS).hashCode());
+    }
+
+    @Test
+    public void InputHashFalseId(){
+        Assertions.assertFalse(Input.formInput(State.START, "id", StackItems.EMPTY).hashCode() ==
+                Input.formInput(State.START,"potato",StackItems.PARENTHESIS).hashCode());
+    }
+
+    @Test
+    public void InputHashFalseState(){
+        Assertions.assertFalse(Input.formInput(State.START, "id", StackItems.EMPTY).hashCode() ==
+                Input.formInput(State.ID,"id",StackItems.PARENTHESIS).hashCode());
     }
 }
 

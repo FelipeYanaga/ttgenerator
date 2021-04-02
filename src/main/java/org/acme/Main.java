@@ -1,6 +1,6 @@
 package org.acme;
 
-import org.acme.pda.PushDown;
+import org.acme.pda.*;
 import org.apache.commons.codec.binary.StringUtils;
 
 import java.util.Arrays;
@@ -25,8 +25,8 @@ public class Main {
 //        while (scanner.hasNext()){
 //            System.out.println(scanner.next());
 //        }
-        PushDown pda = new PushDown();
-        System.out.println(pda.readInput("not id and id or id iff id xor not id"));
+//        PushDown pda = new PushDown();
+//        System.out.println(pda.readInput("not id and id or id iff id xor not id"));
     }
 }
 

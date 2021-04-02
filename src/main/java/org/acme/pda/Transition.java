@@ -1,14 +1,20 @@
 package org.acme.pda;
 
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public enum Transition {
+    //ID Transitions
     ID_E(Tuple.formTuple(
             Input.formInput(State.START, "id", StackItems.EMPTY),
             Output.formOutput(State.ID, StackItems.EMPTY))),
     ID_O(Tuple.formTuple(
             Input.formInput(State.START, "id", StackItems.OPERATOR),
             Output.formOutput(State.ID, StackItems.EMPTY))),
+
+    //Not transitions
     NOT_E(Tuple.formTuple(
             Input.formInput(State.START, "not", StackItems.EMPTY),
             Output.formOutput(State.NOT_STATE, StackItems.NOT_OPERATOR))
@@ -17,22 +23,30 @@ public enum Transition {
             Input.formInput(State.START, "not", StackItems.OPERATOR),
             Output.formOutput(State.NOT_STATE, StackItems.OPERATOR))
             ),
-    PARENTHESIS_E(Tuple.formTuple(
-            Input.formInput(State.START, "(", StackItems.EMPTY),
-            Output.formOutput(State.START, StackItems.PARENTHESIS))
-            ),
-    PARENTHESIS_P(Tuple.formTuple(
-            Input.formInput(State.START, ")", StackItems.PARENTHESIS),
-            Output.formOutput(State.START, StackItems.EMPTY))
-            ),
     NOT_N(Tuple.formTuple(
-            Input.formInput(State.NOT_STATE, "not", StackItems.NOT_OPERATOR),
-            Output.formOutput(State.NOT_STATE, StackItems.NOT_OPERATOR))
-            ),
+            Input.formInput(State.NOT_STATE, "not", StackItems.EMPTY),
+            Output.formOutput(State.NOT_STATE, StackItems.EMPTY))
+    ),
     ID_N(Tuple.formTuple(
             Input.formInput(State.NOT_STATE, "id", StackItems.NOT_OPERATOR),
             Output.formOutput(State.ID, StackItems.EMPTY))
+    ),
+
+    //Parenthesis Transitions
+    PARENTHESIS_OPEN_E(Tuple.formTuple( // If you get an parenthesis at the beginning
+            Input.formInput(State.START, "(", StackItems.EMPTY),
+            Output.formOutput(State.ID, StackItems.PARENTHESIS))
             ),
+    PARENTHESIS_CLOSE_ID(Tuple.formTuple( // Closing the parenthesis at ID, because you always close it after an ID
+            Input.formInput(State.ID, ")", StackItems.PARENTHESIS),
+            Output.formOutput(State.START, StackItems.EMPTY))
+            ),
+    PARENTHESIS_OPEN_N(Tuple.formTuple(
+            Input.formInput(State.NOT_STATE, "(", StackItems.EMPTY),
+            Output.formOutput(State.NOT_STATE, StackItems.PARENTHESIS)
+    )),
+
+    //Operator Transitions
     AND_E(Tuple.formTuple(
             Input.formInput(State.ID, "and", StackItems.EMPTY),
             Output.formOutput(State.START, StackItems.OPERATOR))
@@ -65,6 +79,19 @@ public enum Transition {
     public Tuple getBehavior(){ return this.behavior;}
 
     /*
+    Map of the inputs that should return the output.
+     */
+    private static final Map<Input, Output> INPUTS_TO_OUTPUTS = Arrays.stream(values())
+            .collect(Collectors.toUnmodifiableMap(o -> o.getBehavior().getInput(), o -> o.getBehavior().getOutput()));
+
+    /*
+    Map of the inputs to the transitions.
+    Maybe having both of these at the same time might be a little bit of a stretch
+     */
+    private static final Map<Input, Transition> INPUTS_TO_TRANSITION = Arrays.stream(values())
+            .collect(Collectors.toUnmodifiableMap(o -> o.getBehavior().getInput(), o -> o));
+
+    /*
     Implement a map to get the values in O(1) and not O(n) time, but this might be acceptable
     to create later.
      */
@@ -78,21 +105,10 @@ public enum Transition {
     }
 
     public static boolean containsInput(Input input) {
-        for (Transition t : TRANSITIONS) {
-            if (t == Transition.getTransition(input)){
-                return true;
-            }
-        }
-        return false;
+        return INPUTS_TO_OUTPUTS.containsKey(input);
     }
 
     public static Transition getTransition(Input input) {
-        Transition value = null;
-        for (Transition t : TRANSITIONS) {
-            if (input.equals(t.getBehavior().getInput())) {
-                value = t;
-            }
-        }
-        return value;
+        return INPUTS_TO_TRANSITION.get(input);
     }
 }

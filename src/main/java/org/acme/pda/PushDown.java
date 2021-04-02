@@ -50,13 +50,22 @@ public class PushDown {
     Now, you have to think about the states as well, it only ends if it's an accepting state and the stack is empty
     Simply having transitions for all of the Strings is not enough, but this does show that the transitions are being
     applied correctly.
+
+    Other point to consider is that may not be necessarily empty for state to continue.
      */
     private void makeTransition(Transition transition) {
         Output output = transition.getBehavior().getOutput();
         setStates(output.getState());
         updateStack(transition);
+        /*
+        Some transitions don't need to be in a certain state
+         */
     }
 
+
+    /*
+    You don't need to do anything with transitions that have the same stack items, because they don't change anything
+     */
     private void updateStack(Transition transition) {
         if (transition.getBehavior().getInput().getItem() != transition.getBehavior().getOutput().getItem()){
             if (transition.getBehavior().getInput().getItem() == StackItems.EMPTY) {
@@ -67,5 +76,4 @@ public class PushDown {
             }
         }
     }
-
 }
