@@ -166,5 +166,29 @@ public class NLPTest {
                 Input.formInput(State.ID,"id",StackItems.PARENTHESIS).hashCode());
     }
 
+    private PushDown pda;
+
+    private Set<SingleVarStatement> vars;
+
+    @BeforeEach
+    void beforePda(){
+        this.pda = new PushDown();
+        this.vars = new HashSet<SingleVarStatement>();
+    }
+
+
+    @Test
+    public void testGetVars(){
+        vars.add(SingleVarStatement.of("A"));
+        vars.add(SingleVarStatement.of("B"));
+        pda.getVars("A and B");
+        assert(pda.getVars("A and B").equals(vars));
+    }
+
+    @Test
+    public void testSetVars(){
+        PushDown.setVars(pda.getVars("A and B"));
+        assert(PushDown.VARS.contains(SingleVarStatement.of("A")));
+    }
 }
 

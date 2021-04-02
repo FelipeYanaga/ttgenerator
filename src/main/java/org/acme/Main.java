@@ -23,10 +23,9 @@ public class Main {
 //            System.out.println(scanner.next());
 //        }
 //
-//        PushDown pda = new PushDown();
-//        System.out.println(pda.validInput(format));
-//        System.out.println(pda.getAutomataStack());
-        System.out.println("Chico eh gay");
+        PushDown pda = new PushDown();
+        pda.getVars("A and B");
+
     }
 }
 

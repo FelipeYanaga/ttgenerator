@@ -1,7 +1,6 @@
 package org.acme.pda;
 
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class PushDown {
 
@@ -13,9 +12,39 @@ public class PushDown {
     private State state;
     private boolean insideP;
 
+    public static Set<SingleVarStatement> VARS = new HashSet<>();
+
+    public static void setVars(Set<SingleVarStatement> vars) {
+        VARS = vars;
+    }
+
     public PushDown(){
         this.state = State.START;
         automataStack.push(StackItems.EMPTY);
+    }
+
+    public Set<SingleVarStatement> getVars(String s){
+
+        Set<SingleVarStatement> vars = new HashSet<SingleVarStatement>();
+
+        String[] splitStatement = s.split("(?<=\\()|(?=\\))");
+
+        String splitString = "";
+        for (String s1 : splitStatement) {
+            splitString = splitString + " " + s1;
+        }
+
+        Scanner scanner = new Scanner(splitString);
+        while (scanner.hasNext()) {
+            String s1 = scanner.next();
+            if (!Operator.contains(s1) && !s1.equalsIgnoreCase(")")
+            && !s1.equalsIgnoreCase("(")) {
+                vars.add(SingleVarStatement.of(s1));
+            }
+        }
+
+
+        return vars;
     }
 
     public boolean validInput(String s) {
