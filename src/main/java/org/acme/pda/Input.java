@@ -1,19 +1,20 @@
 package org.acme.pda;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class Input {
     private final State state;
-    private final String id;
+    private final Set ids;
     private final StackItems item;
 
-    public Input(State state, String id, StackItems item) {
+    public Input(State state, Set ids, StackItems item) {
         this.state = state;
-        this.id = id;
+        this.ids = ids;
         this.item = item;
     }
 
-    public static Input formInput(State state, String id, StackItems item) {
+    public static Input formInput(State state, Set id, StackItems item) {
         return new Input(state, id, item);
     }
 
@@ -21,8 +22,8 @@ public class Input {
         return this.item;
     }
 
-    public String getId() {
-        return this.id;
+    public Set getId() {
+        return this.ids;
     }
 
     public State getState() {
@@ -35,7 +36,7 @@ public class Input {
         if (o instanceof Input) {
             Input other = (Input) o;
             return Objects.equals(this.state, other.state) &&
-                    Objects.equals(this.id, other.id)
+                    Objects.equals(this.ids, other.ids)
                     && Objects.equals(this.item, other.item);
         }
         return false;
@@ -43,6 +44,6 @@ public class Input {
 
     @Override
     public int hashCode() {
-        return Objects.hash(state, id, item);
+        return Objects.hash(state, ids, item);
     }
 }

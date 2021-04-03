@@ -16,7 +16,11 @@ public enum Operator implements Potato {
     private static final Map<String, Operator> VALUES = Arrays.stream(values())
             .collect(Collectors.toUnmodifiableMap(o -> o.value, o -> o));
 
-    private static final EnumSet<Operator> OPERATORS = EnumSet.allOf(Operator.class);
+    public static final EnumSet<Operator> OPERATORS = EnumSet.allOf(Operator.class);
+
+    public static final EnumSet<Operator> NOT_SET = EnumSet.of(NOT);
+
+    public static final EnumSet<Operator> NON_NOT_OPERATORS = EnumSet.complementOf(NOT_SET);
 
     private final String value;
 

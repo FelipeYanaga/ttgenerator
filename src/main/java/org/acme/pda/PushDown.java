@@ -60,7 +60,8 @@ public class PushDown {
         //PDA starts to read the input
         Scanner scanner = new Scanner(splitString);
         while (scanner.hasNext()){
-            Input input = Input.formInput(this.state, scanner.next(),automataStack.peek());
+            Set word = classify(scanner.next());
+            Input input = Input.formInput(this.state, word ,automataStack.peek());
             if (Transition.containsInput(input)){
                 System.out.println(input.getState() + " " + input.getItem() + " " + input.getId());
                 makeTransition(input);
@@ -110,12 +111,12 @@ public class PushDown {
         }
         else if (transition.getBehavior().getInput().getItem() == transition.getBehavior().getOutput().getItem() &&
         transition.getBehavior().getInput().getItem() == StackItems.PARENTHESIS
-        && transition.getBehavior().getInput().getId().equalsIgnoreCase("(")) {
+        && transition.getBehavior().getInput().getId().equals(Parenthesis.OPENING_P)) {
             this.automataStack.push(StackItems.PARENTHESIS);
         }
         else if (transition.getBehavior().getInput().getItem() == transition.getBehavior().getOutput().getItem() &&
         transition.getBehavior().getInput().getItem() == StackItems.PARENTHESIS
-        && transition.getBehavior().getInput().getId().equalsIgnoreCase(")")) {
+        && transition.getBehavior().getInput().getId().equals(Parenthesis.CLOSING_P)) {
             this.automataStack.pop();
         }
     }
@@ -174,6 +175,24 @@ public class PushDown {
         }
         else {
             return IfStatement.of();
+        }
+    }
+
+    public Set classify(String s) {
+        if (Operator.NON_NOT_OPERATORS.contains(Operator.fromString(s))) {
+            return Operator.NON_NOT_OPERATORS;
+        }
+        else if (Operator.NOT_SET.contains(Operator.fromString(s))) {
+            return Operator.NOT_SET;
+        }
+        else if (Parenthesis.OPENING_P.contains(Parenthesis.fromString(s))){
+            return Parenthesis.OPENING_P;
+        }
+        else if (Parenthesis.CLOSING_P.contains(Parenthesis.fromString(s))){
+            return Parenthesis.CLOSING_P;
+        }
+        else {
+            return PushDown.VARS;
         }
     }
 

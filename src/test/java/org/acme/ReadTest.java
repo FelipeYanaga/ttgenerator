@@ -12,6 +12,7 @@ public class ReadTest {
     @BeforeEach
     void before() {
         this.pushDown = new PushDown();
+        pushDown.getVars("id");
     }
 
     @Test
