@@ -9,7 +9,7 @@ public class Output {
         this.item = item;
     }
 
-    public static Output formOutput(State state, StackItems item) { return new Output(state, item);}
+    public static Output of(State state, StackItems item) { return new Output(state, item);}
 
     public State getState(){return this.state;}
 

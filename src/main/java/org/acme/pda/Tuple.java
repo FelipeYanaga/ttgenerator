@@ -9,7 +9,7 @@ public class Tuple {
         this.output = output;
     }
 
-    public static Tuple formTuple(Input input, Output output) {return new Tuple(input, output);}
+    public static Tuple of(Input input, Output output) {return new Tuple(input, output);}
 
     public Input getInput(){return this.input;}
 

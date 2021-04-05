@@ -14,7 +14,7 @@ public class Input {
         this.item = item;
     }
 
-    public static Input formInput(State state, Set id, StackItems item) {
+    public static Input of(State state, Set id, StackItems item) {
         return new Input(state, id, item);
     }
 

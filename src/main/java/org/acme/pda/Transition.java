@@ -7,71 +7,71 @@ import java.util.stream.Collectors;
 
 public enum Transition {
     //ID Transitions
-    START_ID(Tuple.formTuple(
-            Input.formInput(State.START, PushDown.VARS, StackItems.EMPTY),
-            Output.formOutput(State.ID, StackItems.EMPTY))),
-    OPERATOR_ID(Tuple.formTuple(
-            Input.formInput(State.OPERATOR, PushDown.VARS, StackItems.EMPTY),
-            Output.formOutput(State.ID, StackItems.EMPTY))),
-    PARENTHESIS_ID(Tuple.formTuple(
-            Input.formInput(State.START,PushDown.VARS, StackItems.PARENTHESIS),
-            Output.formOutput(State.ID, StackItems.PARENTHESIS))
+    START_ID(Tuple.of(
+            Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY),
+            Output.of(State.ID, StackItems.EMPTY))),
+    OPERATOR_ID(Tuple.of(
+            Input.of(State.OPERATOR, SingleVarStatement.VARS, StackItems.EMPTY),
+            Output.of(State.ID, StackItems.EMPTY))),
+    PARENTHESIS_ID(Tuple.of(
+            Input.of(State.START, SingleVarStatement.VARS, StackItems.PARENTHESIS),
+            Output.of(State.ID, StackItems.PARENTHESIS))
     ),
-    OPERATOR_ID_P(Tuple.formTuple(
-            Input.formInput(State.OPERATOR, PushDown.VARS, StackItems.PARENTHESIS),
-            Output.formOutput(State.ID, StackItems.PARENTHESIS))),
+    OPERATOR_ID_P(Tuple.of(
+            Input.of(State.OPERATOR, SingleVarStatement.VARS, StackItems.PARENTHESIS),
+            Output.of(State.ID, StackItems.PARENTHESIS))),
 
     //Not transitions
-    START_NOT(Tuple.formTuple(
-            Input.formInput(State.START, Operator.NOT_SET, StackItems.EMPTY),
-            Output.formOutput(State.START, StackItems.EMPTY))
+    START_NOT(Tuple.of(
+            Input.of(State.START, Operator.NOT_SET, StackItems.EMPTY),
+            Output.of(State.START, StackItems.EMPTY))
             ),
-    OPERATOR_NOT(Tuple.formTuple(
-            Input.formInput(State.OPERATOR, Operator.NOT_SET, StackItems.EMPTY),
-            Output.formOutput(State.START, StackItems.EMPTY))
+    OPERATOR_NOT(Tuple.of(
+            Input.of(State.OPERATOR, Operator.NOT_SET, StackItems.EMPTY),
+            Output.of(State.START, StackItems.EMPTY))
             ),
-    NOT_START_P(Tuple.formTuple(
-            Input.formInput(State.START, Operator.NOT_SET, StackItems.PARENTHESIS),
-            Output.formOutput(State.START, StackItems.PARENTHESIS))
+    NOT_START_P(Tuple.of(
+            Input.of(State.START, Operator.NOT_SET, StackItems.PARENTHESIS),
+            Output.of(State.START, StackItems.PARENTHESIS))
     ),
-    NOT_OPERATOR_P(Tuple.formTuple(
-            Input.formInput(State.OPERATOR, Operator.NOT_SET, StackItems.PARENTHESIS),
-            Output.formOutput(State.START, StackItems.PARENTHESIS))
+    NOT_OPERATOR_P(Tuple.of(
+            Input.of(State.OPERATOR, Operator.NOT_SET, StackItems.PARENTHESIS),
+            Output.of(State.START, StackItems.PARENTHESIS))
     ),
 
     //Parenthesis Transitions
-    PARENTHESIS_OPEN_E(Tuple.formTuple( // If you get an parenthesis at the beginning
-            Input.formInput(State.START, Parenthesis.OPENING_P, StackItems.EMPTY),
-            Output.formOutput(State.START, StackItems.PARENTHESIS))
+    PARENTHESIS_OPEN_E(Tuple.of( // If you get an parenthesis at the beginning
+            Input.of(State.START, Parenthesis.OPENING_P, StackItems.EMPTY),
+            Output.of(State.START, StackItems.PARENTHESIS))
             ),
-    PARENTHESIS_CLOSE_ID(Tuple.formTuple( // Closing the parenthesis at ID, because you always close it after an ID
-            Input.formInput(State.ID, Parenthesis.CLOSING_P, StackItems.PARENTHESIS),
-            Output.formOutput(State.ID, StackItems.EMPTY))
+    PARENTHESIS_CLOSE_ID(Tuple.of( // Closing the parenthesis at ID, because you always close it after an ID
+            Input.of(State.ID, Parenthesis.CLOSING_P, StackItems.PARENTHESIS),
+            Output.of(State.ID, StackItems.EMPTY))
             ),
-    PARENTHESIS_OPEN_OP(Tuple.formTuple(
-            Input.formInput(State.OPERATOR, Parenthesis.OPENING_P, StackItems.EMPTY),
-            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS)
+    PARENTHESIS_OPEN_OP(Tuple.of(
+            Input.of(State.OPERATOR, Parenthesis.OPENING_P, StackItems.EMPTY),
+            Output.of(State.OPERATOR, StackItems.PARENTHESIS)
     )),
-    PARENTHESIS_DOUBLE_OPEN_OP(Tuple.formTuple(
-            Input.formInput(State.OPERATOR, Parenthesis.OPENING_P, StackItems.PARENTHESIS),
-            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS)
+    PARENTHESIS_DOUBLE_OPEN_OP(Tuple.of(
+            Input.of(State.OPERATOR, Parenthesis.OPENING_P, StackItems.PARENTHESIS),
+            Output.of(State.OPERATOR, StackItems.PARENTHESIS)
     )),
-    PARENTHESIS_DOUBLE_PARENTHESIS(Tuple.formTuple(
-            Input.formInput(State.START, Parenthesis.OPENING_P, StackItems.PARENTHESIS),
-            Output.formOutput(State.START, StackItems.PARENTHESIS)
+    PARENTHESIS_DOUBLE_PARENTHESIS(Tuple.of(
+            Input.of(State.START, Parenthesis.OPENING_P, StackItems.PARENTHESIS),
+            Output.of(State.START, StackItems.PARENTHESIS)
     )),
 
 
     /*
     Operator Transitions with and without parenthesis
      */
-    OP_E(Tuple.formTuple(
-            Input.formInput(State.ID, Operator.NON_NOT_OPERATORS, StackItems.EMPTY),
-            Output.formOutput(State.OPERATOR, StackItems.EMPTY))
+    OP_E(Tuple.of(
+            Input.of(State.ID, Operator.NON_NOT_OPERATORS, StackItems.EMPTY),
+            Output.of(State.OPERATOR, StackItems.EMPTY))
         ),
-    OP_P(Tuple.formTuple(
-            Input.formInput(State.ID, Operator.NON_NOT_OPERATORS, StackItems.PARENTHESIS),
-            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS))
+    OP_P(Tuple.of(
+            Input.of(State.ID, Operator.NON_NOT_OPERATORS, StackItems.PARENTHESIS),
+            Output.of(State.OPERATOR, StackItems.PARENTHESIS))
     );
 //    OR_E(Tuple.formTuple(
 //            Input.formInput(State.ID, Operator.OPERATORS, StackItems.EMPTY),

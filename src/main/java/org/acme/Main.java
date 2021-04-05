@@ -2,6 +2,7 @@ package org.acme;
 
 import org.acme.pda.*;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -24,7 +25,13 @@ public class Main {
 //        }
 //
         PushDown pda = new PushDown();
-        pda.getVars("A and B");
+        SingleVarStatement.setVars(pda.getVars("A and B"));
+        pda.createStatements("A and B");
+        System.out.println(pda.getPlaceHolder().getClass().toString());
+
+        Scanner scanner = new Scanner("A and B ( )");
+        String p = "\\(";
+        System.out.println(scanner.hasNext(p));
 
     }
 }

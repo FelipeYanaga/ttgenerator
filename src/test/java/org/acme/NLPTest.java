@@ -58,13 +58,13 @@ public class NLPTest {
 
     @Test
     public void containsInput(){
-        Input input = Input.formInput(State.START,Operator.NOT_SET, StackItems.EMPTY);
+        Input input = Input.of(State.START,Operator.NOT_SET, StackItems.EMPTY);
         assert(Transition.containsInput(input));
     }
 
     @Test
     public void containsInputFalse(){
-        Input input = Input.formInput(State.START, Operator.NON_NOT_OPERATORS, StackItems.PARENTHESIS);
+        Input input = Input.of(State.START, Operator.NON_NOT_OPERATORS, StackItems.PARENTHESIS);
         Assertions.assertFalse(Transition.containsInput(input));
     }
 
@@ -75,48 +75,48 @@ public class NLPTest {
 
     @Test
     public void getTransition(){
-        Input input = Input.formInput(State.START, PushDown.VARS, StackItems.EMPTY);
+        Input input = Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY);
         assert(Transition.START_ID == Transition.getTransition(input));
     }
 
     @Test
     public void equals(){
-        Input input = Input.formInput(State.START,PushDown.VARS,StackItems.EMPTY);
+        Input input = Input.of(State.START, SingleVarStatement.VARS,StackItems.EMPTY);
         assert(Transition.START_ID.equals(Transition.getTransition(input)));
     }
 
     @Test
     public void inputEqualityRightSide(){
-        Input input = Input.formInput(State.START,PushDown.VARS,StackItems.EMPTY);
-        Input input1 = Input.formInput(State.START,PushDown.VARS,StackItems.EMPTY);
+        Input input = Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY);
+        Input input1 = Input.of(State.START, SingleVarStatement.VARS,StackItems.EMPTY);
         assert(input.equals(Transition.START_ID.getBehavior().getInput()));
     }
 
     @Test
     public void inputEqualityLeftSide(){
-        Input input = Input.formInput(State.START,PushDown.VARS,StackItems.EMPTY);
-        Input input1 = Input.formInput(State.START,PushDown.VARS,StackItems.EMPTY);
+        Input input = Input.of(State.START, SingleVarStatement.VARS,StackItems.EMPTY);
+        Input input1 = Input.of(State.START, SingleVarStatement.VARS,StackItems.EMPTY);
         assert (input.equals(input1));
     }
 
     @Test
     public void inputEqualityOtherSide(){
-        Input input = Input.formInput(State.START,PushDown.VARS,StackItems.EMPTY);
-        Input input1 = Input.formInput(State.START,PushDown.VARS,StackItems.EMPTY);
+        Input input = Input.of(State.START, SingleVarStatement.VARS,StackItems.EMPTY);
+        Input input1 = Input.of(State.START, SingleVarStatement.VARS,StackItems.EMPTY);
         assert (input1.equals(input));
     }
 
     @Test
     public void inputEqualityFalse(){
-        Input input = Input.formInput(State.ID,PushDown.VARS,StackItems.EMPTY);
-        Input input1 = Input.formInput(State.START,PushDown.VARS,StackItems.EMPTY);
+        Input input = Input.of(State.ID, SingleVarStatement.VARS,StackItems.EMPTY);
+        Input input1 = Input.of(State.START, SingleVarStatement.VARS,StackItems.EMPTY);
         Assertions.assertFalse(input.equals(input1));
     }
 
     @Test
     public void objectEquality(){
-        Input input = Input.formInput(State.ID,PushDown.VARS,StackItems.EMPTY);
-        Input input1 = Input.formInput(State.ID,PushDown.VARS,StackItems.EMPTY);
+        Input input = Input.of(State.ID, SingleVarStatement.VARS,StackItems.EMPTY);
+        Input input1 = Input.of(State.ID, SingleVarStatement.VARS,StackItems.EMPTY);
         assert(input.equals(input1));
     }
 
@@ -143,27 +143,27 @@ public class NLPTest {
 
     @Test
     public void InputHashTrue(){
-        assert(Input.formInput(State.START, PushDown.VARS, StackItems.EMPTY).hashCode() ==
-                Input.formInput(State.START,PushDown.VARS,StackItems.EMPTY).hashCode()
+        assert(Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY).hashCode() ==
+                Input.of(State.START, SingleVarStatement.VARS,StackItems.EMPTY).hashCode()
         );
     }
 
     @Test
     public void InputHashFalse(){
-        Assertions.assertFalse(Input.formInput(State.START, PushDown.VARS, StackItems.EMPTY).hashCode() ==
-                Input.formInput(State.START,PushDown.VARS,StackItems.PARENTHESIS).hashCode());
+        Assertions.assertFalse(Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY).hashCode() ==
+                Input.of(State.START, SingleVarStatement.VARS,StackItems.PARENTHESIS).hashCode());
     }
 
     @Test
     public void InputHashFalseId(){
-        Assertions.assertFalse(Input.formInput(State.START, PushDown.VARS, StackItems.EMPTY).hashCode() ==
-                Input.formInput(State.START,Operator.NON_NOT_OPERATORS,StackItems.PARENTHESIS).hashCode());
+        Assertions.assertFalse(Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY).hashCode() ==
+                Input.of(State.START,Operator.NON_NOT_OPERATORS,StackItems.PARENTHESIS).hashCode());
     }
 
     @Test
     public void InputHashFalseState(){
-        Assertions.assertFalse(Input.formInput(State.START, PushDown.VARS, StackItems.EMPTY).hashCode() ==
-                Input.formInput(State.ID,PushDown.VARS,StackItems.PARENTHESIS).hashCode());
+        Assertions.assertFalse(Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY).hashCode() ==
+                Input.of(State.ID, SingleVarStatement.VARS,StackItems.PARENTHESIS).hashCode());
     }
 
     private PushDown pda;
@@ -187,13 +187,29 @@ public class NLPTest {
 
     @Test
     public void testSetVars(){
-        PushDown.setVars(pda.getVars("A and B"));
-        assert(PushDown.VARS.contains(SingleVarStatement.of("A")));
+        SingleVarStatement.setVars(pda.getVars("A and B"));
+        assert(SingleVarStatement.VARS.contains(SingleVarStatement.of("A")));
     }
 
     @Test
     public void testNonNot(){
         assert(Operator.NON_NOT_OPERATORS.contains(Operator.AND));
     }
+
+    @Test
+    public void testIsVar(){
+        SingleVarStatement.setVars(pda.getVars("A and B"));
+        assert(pda.isVar("A"));
+    }
+
+    @Test
+    public void testBuilderSingleVar(){
+        String name = "A";
+        SingleVarStatement var = new SingleVarStatement.Builder(name).build();
+        SingleVarStatement.addVar(var);
+        assert(SingleVarStatement.contains(name));
+    }
+
 }
+
 

@@ -10,17 +10,16 @@ public class PushDown {
     private Stack<Integer> statementStack;
     private Stack<StackItems> automataStack = new Stack<>();
     private State state;
-    private boolean insideP;
-
-    public static Set<SingleVarStatement> VARS = new HashSet<>();
-
-    public static void setVars(Set<SingleVarStatement> vars) {
-        VARS = vars;
-    }
+    private Statement placeHolder;
+    private Statement pStatement;
 
     public PushDown(){
         this.state = State.START;
         automataStack.push(StackItems.EMPTY);
+    }
+
+    public Statement getPlaceHolder(){
+        return placeHolder;
     }
 
     public Set<SingleVarStatement> getVars(String s){
@@ -61,7 +60,7 @@ public class PushDown {
         Scanner scanner = new Scanner(splitString);
         while (scanner.hasNext()){
             Set word = classify(scanner.next());
-            Input input = Input.formInput(this.state, word ,automataStack.peek());
+            Input input = Input.of(this.state, word ,automataStack.peek());
             if (Transition.containsInput(input)){
                 System.out.println(input.getState() + " " + input.getItem() + " " + input.getId());
                 makeTransition(input);
@@ -131,30 +130,62 @@ public class PushDown {
             splitString = splitString + " " + s1;
         }
 
+        boolean isOperator = false;
+        Statement currStatement;
         Scanner scanner = new Scanner(splitString);
+        String word;
         while (scanner.hasNext()) {
-            Statement currStatement;
-            String current = scanner.next();
-            if (isOperator(current)) {
-                currStatement = createStatement(current);
+            word = scanner.next();
+            if (word.equalsIgnoreCase("(") || word.equalsIgnoreCase(")")){
+                word = scanner.next();
             }
-            else if (!isOperator(current) && !s.equalsIgnoreCase(")") && !s.equalsIgnoreCase("(")){
-                currStatement = SingleVarStatement.of(current);
-            }
-            else if (current.equalsIgnoreCase("(")){
-                insideP = true;
+            if (isVar(word)) {
+                currStatement = SingleVarStatement.getStatement(word);
+                if (isOperator) {
+                    placeHolder.addStatement(currStatement);
+                }
+                else {
+                    placeHolder = currStatement;
+                    isOperator = false;
+                }
             }
             else {
-                insideP = false;
+                if (word.equalsIgnoreCase(Operator.NOT.toString())){
+                    placeHolder = new NotStatement.Builder().build();
+                    isOperator = true;
+                }
+                else if (word.equalsIgnoreCase(Operator.OR.toString())){
+                    placeHolder = new OrStatement.Builder(placeHolder).build();
+                    isOperator = true;
+                }
+                else if (word.equalsIgnoreCase(Operator.XOR.toString())){
+                    placeHolder = new XorStatement.Builder(placeHolder).build();
+                    isOperator = true;
+                }
+                else if (word.equalsIgnoreCase(Operator.AND.toString())){
+                    placeHolder = new AndStatement.Builder(placeHolder).build();
+                    isOperator = true;
+                }
+                else if (word.equalsIgnoreCase(Operator.IFF.toString())){
+                    placeHolder = new IffStatement.Builder(placeHolder).build();
+                    isOperator = true;
+                }
+                else {
+                    placeHolder = new IfStatement.Builder(placeHolder).build();
+                    isOperator = true;
+                }
             }
         }
-
 
         return true;
     }
 
     private boolean isOperator(String s){
         return Operator.contains(s);
+    }
+
+    public boolean isVar(String s){
+        return SingleVarStatement.VARS.contains(SingleVarStatement.of(s));
     }
 
     private Statement createStatement(String s){
@@ -192,7 +223,7 @@ public class PushDown {
             return Parenthesis.CLOSING_P;
         }
         else {
-            return PushDown.VARS;
+            return SingleVarStatement.VARS;
         }
     }
 

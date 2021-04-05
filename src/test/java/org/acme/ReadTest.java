@@ -2,6 +2,7 @@ package org.acme;
 
 import org.acme.pda.PushDown;
 import org.acme.pda.StackItems;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ public class ReadTest {
     @BeforeEach
     void before() {
         this.pushDown = new PushDown();
-        pushDown.getVars("id");
+        pushDown.getVars("id and B and C and A");
     }
 
     @Test
@@ -102,5 +103,25 @@ public class ReadTest {
     @Test
     public void readTripleP(){
         assert(pushDown.validInput("(((id)))"));
+    }
+
+    @Test
+    public void readVars(){
+        assert(pushDown.validInput("A and B and C"));
+    }
+
+    @Test
+    public void readInvalidInput(){
+        Assertions.assertFalse(pushDown.validInput("A and"));
+    }
+
+    @Test
+    public void readInvalidInputNot(){
+        Assertions.assertFalse(pushDown.validInput("not"));
+    }
+
+    @Test
+    public void readInvalidInputDoubleP(){
+        Assertions.assertFalse(pushDown.validInput("(A and B"));
     }
 }
