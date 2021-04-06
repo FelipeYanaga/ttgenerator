@@ -57,9 +57,10 @@ public class PushDown {
         }
 
         //PDA starts to read the input
-        Scanner scanner = new Scanner(splitString);
-        while (scanner.hasNext()){
-            Set word = classify(scanner.next());
+//        Scanner scanner = new Scanner(splitString);
+        Parser parser = Parser.of(splitString);
+        while (parser.hasNext()){
+            Set word = classify(parser.next());
             Input input = Input.of(this.state, word ,automataStack.peek());
             if (Transition.containsInput(input)){
                 System.out.println(input.getState() + " " + input.getItem() + " " + input.getId());
@@ -132,12 +133,13 @@ public class PushDown {
 
         boolean isOperator = false;
         Statement currStatement;
-        Scanner scanner = new Scanner(splitString);
+//        Scanner scanner = new Scanner(splitString);
+        Parser parser = Parser.of(splitString);
         String word;
-        while (scanner.hasNext()) {
-            word = scanner.next();
+        while (parser.hasNext()) {
+            word = parser.next();
             if (word.equalsIgnoreCase("(") || word.equalsIgnoreCase(")")){
-                word = scanner.next();
+                word = parser.next();
             }
             if (isVar(word)) {
                 currStatement = SingleVarStatement.getStatement(word);
@@ -225,6 +227,25 @@ public class PushDown {
         else {
             return SingleVarStatement.VARS;
         }
+    }
+
+    public Statement parseStatement(String s){
+        //Get statement and split it due to the parenthesis
+        String[] splitStatement = s.split("(?<=\\()|(?=\\))"); // Breaks (A into ( A, or, B) into B )
+
+        //Create a string that can be read by a Scanner
+        String splitString = "";
+        for (String s1 : splitStatement) {
+            splitString = splitString + " " + s1;
+        }
+
+        boolean isOperator = false;
+        Statement currStatement;
+        Parser parser = Parser.of(splitString);
+        String word;
+
+
+        return placeHolder;
     }
 
 }
