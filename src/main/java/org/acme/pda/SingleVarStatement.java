@@ -83,4 +83,18 @@ public class SingleVarStatement implements Statement {
         return null;
     }
 
+    public boolean evaluate(){
+        return this.value;
+    }
+
+    public void setValue(boolean value){
+        this.value = value;
+    }
+
+    public static void setValues(){ // set them to true for now
+        for (SingleVarStatement var : VARS){
+            var.setValue(true);
+        }
+    }
+
 }

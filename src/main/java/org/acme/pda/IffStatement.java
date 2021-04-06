@@ -48,4 +48,13 @@ public class IffStatement implements Statement {
     private IffStatement(IffStatement.Builder builder) {
         this.leftStatement = builder.leftStatement;
     }
+
+    public boolean evaluate(){
+        if ((this.rightStatement != null) && (this.leftStatement != null)){
+            return rightStatement.evaluate() == leftStatement.evaluate();
+        }
+        else {
+            throw new RuntimeException("Error in statement construction!");
+        }
+    }
 }

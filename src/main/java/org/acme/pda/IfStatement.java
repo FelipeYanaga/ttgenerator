@@ -49,5 +49,19 @@ public class IfStatement implements Statement {
         this.leftStatement = builder.leftStatement;
     }
 
+    public boolean evaluate(){
+        if ((this.rightStatement != null) && (this.leftStatement != null)){
+            if (leftStatement.evaluate()){
+                return rightStatement.evaluate();
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            throw new RuntimeException("Error in statement construction!");
+        }
+    }
+
 }
 

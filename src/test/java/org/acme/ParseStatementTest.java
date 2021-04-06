@@ -1,6 +1,7 @@
 package org.acme;
 
 import org.acme.pda.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -69,6 +70,41 @@ public class ParseStatementTest {
         Statement statement = new IffStatement();
         assert(pda.parseStatement().getClass() == statement.getClass());
     }
+
+    @Test
+    public void testParenthesisDouble(){
+        pda.createParser("((A and B) iff (B or C))");
+        Statement statement = new IffStatement();
+        assert(pda.parseStatement().getClass() == statement.getClass());
+    }
+
+    @Test
+    public void testParenthesisTriple(){
+        pda.createParser("((not (A and B) iff (A and (B and C)))");
+        Statement statement = new IffStatement();
+        assert(pda.parseStatement() instanceof IffStatement);
+    }
+
+    @Test
+    public void testEvaluate(){
+        Statement statement = new SingleVarStatement("A");
+        Assertions.assertFalse(statement.evaluate());
+    }
+
+    @Test
+    public void testEvaluateAndFalse(){
+        pda.createParser("A and B");
+        Assertions.assertFalse((pda.parseStatement().evaluate()));
+    }
+
+    @Test
+    public void testEvaluateAndTrue(){
+        pda.createParser("A and B");
+        SingleVarStatement.setValues();
+        assert((pda.parseStatement().evaluate()));
+    }
+
+
 
 
 }

@@ -49,4 +49,13 @@ public class OrStatement implements Statement {
         this.leftStatement = builder.leftStatement;
     }
 
+    public boolean evaluate(){
+        if ((this.rightStatement != null) && (this.leftStatement != null)){
+            return rightStatement.evaluate() || leftStatement.evaluate();
+        }
+        else {
+            throw new RuntimeException("Error in statement construction!");
+        }
+    }
+
 }

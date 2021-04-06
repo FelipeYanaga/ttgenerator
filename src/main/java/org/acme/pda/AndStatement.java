@@ -3,6 +3,7 @@ package org.acme.pda;
 public class AndStatement implements Statement {
     private Statement rightStatement;
     private Statement leftStatement;
+    private boolean value;
 
     public AndStatement(){}
 
@@ -47,6 +48,15 @@ public class AndStatement implements Statement {
 
     private AndStatement(AndStatement.Builder builder) {
         this.leftStatement = builder.leftStatement;
+    }
+
+    public boolean evaluate(){
+        if ((this.rightStatement != null) && (this.leftStatement != null)){
+            return rightStatement.evaluate() && leftStatement.evaluate();
+        }
+        else {
+            throw new RuntimeException("Error in statement construction!");
+        }
     }
 
 }

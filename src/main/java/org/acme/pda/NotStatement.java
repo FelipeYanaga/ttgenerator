@@ -26,4 +26,13 @@ public class NotStatement implements Statement {
 
     private NotStatement(Builder builder){
     }
+
+    public boolean evaluate(){
+        if ((this.rightStatement != null)) {
+            return !rightStatement.evaluate();
+        }
+        else {
+            throw new RuntimeException("Error in statement construction!");
+        }
+    }
 }

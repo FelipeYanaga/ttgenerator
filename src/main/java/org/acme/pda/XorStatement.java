@@ -32,6 +32,15 @@ public class XorStatement implements Statement {
         }
     }
 
+    public boolean evaluate(){
+        if ((this.rightStatement != null) && (this.leftStatement != null)){
+            return rightStatement.evaluate() != leftStatement.evaluate();
+        }
+        else {
+            throw new RuntimeException("Error in statement construction!");
+        }
+    }
+
     public static class Builder {
         //Required parameters
         private final Statement leftStatement;
