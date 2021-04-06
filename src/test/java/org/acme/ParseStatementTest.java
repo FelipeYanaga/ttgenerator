@@ -104,6 +104,13 @@ public class ParseStatementTest {
         assert((pda.parseStatement().evaluate()));
     }
 
+    @Test
+    public void testEvaluateNotTrue(){
+        pda.createParser("not A");
+        SingleVarStatement.setValues();
+        Assertions.assertFalse((pda.parseStatement().evaluate()));
+    }
+
 
 
 
