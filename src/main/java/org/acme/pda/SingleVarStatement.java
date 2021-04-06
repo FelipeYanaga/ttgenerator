@@ -18,8 +18,8 @@ public class SingleVarStatement implements Statement {
 
 //    private static final Map<String, SingleVarStatement> VALUES = //create map;
 
-    public void addStatement(Statement statement){
-
+    public Statement addStatement(Statement statement){
+        return this; // never actually used
     }
 
     public static boolean contains(String name) {

@@ -12,6 +12,7 @@ public class PushDown {
     private State state;
     private Statement placeHolder;
     private Statement pStatement;
+    private Parser parser;
 
     public PushDown(){
         this.state = State.START;
@@ -58,9 +59,9 @@ public class PushDown {
 
         //PDA starts to read the input
 //        Scanner scanner = new Scanner(splitString);
-        Parser parser = Parser.of(splitString);
-        while (parser.hasNext()){
-            Set word = classify(parser.next());
+        Parser parser1 = Parser.of(splitString);
+        while (parser1.hasNext()){
+            Set word = classify(parser1.next());
             Input input = Input.of(this.state, word ,automataStack.peek());
             if (Transition.containsInput(input)){
                 System.out.println(input.getState() + " " + input.getItem() + " " + input.getId());
@@ -229,8 +230,66 @@ public class PushDown {
         }
     }
 
-    public Statement parseStatement(String s){
-        //Get statement and split it due to the parenthesis
+    public Statement parseStatement(){
+
+        boolean isOperator = false;
+        Statement previousStatement = null;
+        String word;
+        while(parser.hasNext()){
+            word = parser.next();
+            if (isVar(word)){
+                if (isOperator){
+                    previousStatement = previousStatement.addStatement(SingleVarStatement.getStatement(word));
+                }
+                else {
+                    previousStatement = SingleVarStatement.getStatement(word);
+                    isOperator = false;
+                }
+            }
+            else if(Operator.contains(word)){
+                if (word.equalsIgnoreCase(Operator.NOT.toString())){
+                    previousStatement = new NotStatement.Builder().build();
+                    isOperator = true;
+                }
+                else if (word.equalsIgnoreCase(Operator.OR.toString())){
+                    previousStatement = new OrStatement.Builder(previousStatement).build();
+                    isOperator = true;
+                }
+                else if (word.equalsIgnoreCase(Operator.XOR.toString())){
+                    previousStatement = new XorStatement.Builder(previousStatement).build();
+                    isOperator = true;
+                }
+                else if (word.equalsIgnoreCase(Operator.AND.toString())){
+                    previousStatement = new AndStatement.Builder(previousStatement).build();
+                    isOperator = true;
+                }
+                else if (word.equalsIgnoreCase(Operator.IFF.toString())){
+                    previousStatement = new IffStatement.Builder(previousStatement).build();
+                    isOperator = true;
+                }
+                else {
+                    previousStatement = new IfStatement.Builder(previousStatement).build();
+                    isOperator = true;
+                }
+            }
+            else if (word.equalsIgnoreCase("(")) {
+                if (isOperator){
+                    previousStatement = previousStatement.addStatement(parseStatement());
+                }
+                else {
+                    previousStatement = parseStatement();
+                }
+            }
+            else { // case in which we hit the final parenthesis
+                return previousStatement;
+            }
+        }
+
+
+        return previousStatement;
+    }
+
+    public void createParser(String s){
         String[] splitStatement = s.split("(?<=\\()|(?=\\))"); // Breaks (A into ( A, or, B) into B )
 
         //Create a string that can be read by a Scanner
@@ -239,13 +298,7 @@ public class PushDown {
             splitString = splitString + " " + s1;
         }
 
-        boolean isOperator = false;
-        Statement currStatement;
-        Parser parser = Parser.of(splitString);
-        String word;
-
-
-        return placeHolder;
+        parser = Parser.of(splitString);
     }
 
 }

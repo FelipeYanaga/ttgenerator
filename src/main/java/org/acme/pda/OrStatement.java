@@ -16,13 +16,15 @@ public class OrStatement implements Statement {
         this.rightStatement = rightStatement;
     }
 
-    public void addStatement(Statement statement) {
+    public Statement addStatement(Statement statement) {
         if (this.leftStatement == null){
             setLeftStatement(statement);
+            return this;
         }
         else {
             if (this.rightStatement == null) {
                 setRightStatement(statement);
+                return this;
             }
             else {
                 throw new RuntimeException("This statement is already complete.");

@@ -10,7 +10,10 @@ public class NotStatement implements Statement {
 
     public static NotStatement of(){return new NotStatement();}
 
-    public void addStatement(Statement statement) {this.rightStatement = statement; }
+    public Statement addStatement(Statement statement) {
+        this.rightStatement = statement;
+        return this;
+    }
 
     public static class Builder {
 
