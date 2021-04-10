@@ -1,40 +1,40 @@
 package org.acme.pda;
 
+import org.acme.statements.*;
+
 import java.util.*;
 
 public class PushDown {
 
-    /* One stack will be used to keep track of statements,
-    the other will be used to keep track of the automata.
+    /*
+    Note: still have to figure out where to put the parenthesis, with regards to statement
+    precedent.
      */
-    private Stack<Integer> statementStack;
-    private Stack<StackItems> automataStack = new Stack<>();
-    private State state;
-    private Statement placeHolder;
-    private Statement pStatement;
-    private Parser parser;
+    private Stack<StackItems> automataStack = new Stack<>(); //Automata Stack
+    private State state; //Automata State
+    private Parser parser; //Scanner
 
     public PushDown(){
         this.state = State.START;
         automataStack.push(StackItems.EMPTY);
     }
 
-    public Statement getPlaceHolder(){
-        return placeHolder;
-    }
+    /*
+    Change the state
+     */
+    private void setState(State newState) { this.state = newState;}
+
+    /*
+    Get what's on the stack
+     */
+    public Stack<StackItems> getAutomataStack() { return this.automataStack;}
 
     public Set<SingleVarStatement> getVars(String s){
-
         Set<SingleVarStatement> vars = new HashSet<SingleVarStatement>();
 
-        String[] splitStatement = s.split("(?<=\\()|(?=\\))");
-
-        String splitString = "";
-        for (String s1 : splitStatement) {
-            splitString = splitString + " " + s1;
-        }
-
-        Scanner scanner = new Scanner(splitString);
+        //This is the statement for getting the vars from the pda
+        //Ideally I'd put this inside another method
+        Scanner scanner = new Scanner(Parser.splitStatement(s));
         while (scanner.hasNext()) {
             String s1 = scanner.next();
             if (!Operator.contains(s1) && !s1.equalsIgnoreCase(")")
@@ -49,21 +49,13 @@ public class PushDown {
 
     public boolean validInput(String s) {
         //Get statement and split it due to the parenthesis
-        String[] splitStatement = s.split("(?<=\\()|(?=\\))"); // Breaks (A into ( A, or, B) into B )
 
-        //Create a string that can be read by a Scanner
-        String splitString = "";
-        for (String s1 : splitStatement) {
-            splitString = splitString + " " + s1;
-        }
 
-        //PDA starts to read the input
-//        Scanner scanner = new Scanner(splitString);
-        Parser parser1 = Parser.of(splitString);
+        Parser parser1 = Parser.of(Parser.splitStatement(s));
         while (parser1.hasNext()){
             Set word = classify(parser1.next());
             Input input = Input.of(this.state, word ,automataStack.peek());
-            if (Transition.containsInput(input)){
+            if (Transitions.containsInput(input)){
                 System.out.println(input.getState() + " " + input.getItem() + " " + input.getId());
                 makeTransition(input);
             }
@@ -75,33 +67,34 @@ public class PushDown {
         return isAccepted();
     }
 
+    /*
+    Operate on the transition
+    Change the state.
+    Call to change stack.
+    @param first part of the transition
+     */
+
     private void makeTransition(Input input) {
-        if (Transition.containsInput(input)) {
-            setState(Transition.getTransition(input).getBehavior().getOutput().getState());
-            Transition transition = Transition.getTransition(input);
+        if (Transitions.containsInput(input)) {
+            setState(Transitions.getTransition(input).getBehavior().getOutput().getState());
+            Transitions transition = Transitions.getTransition(input);
             updateStack(transition);
         }
     }
 
-    private void setState(State newState) { this.state = newState;}
-
-    private State getState(State state) { return this.state;}
-
-    public Stack<StackItems> getAutomataStack() { return this.automataStack;}
-
+    /*
+    Sees if the automaton ended up in a final state and empty stack
+    Meaning it's accepted
+     */
     private boolean isAccepted() {
         return this.state == State.ID &&
                 this.automataStack.peek() == StackItems.EMPTY;
     }
-    /*
-    Other point to consider is that may not be necessarily empty for state to continue.
-     */
-
 
     /*
     You don't need to do anything with transitions that have the same stack items, because they don't change anything
      */
-    private void updateStack(Transition transition) {
+    private void updateStack(Transitions transition) {
         if (transition.getBehavior().getInput().getItem() != transition.getBehavior().getOutput().getItem()){
             if (transition.getBehavior().getInput().getItem() == StackItems.EMPTY) {
                 this.automataStack.push(transition.getBehavior().getOutput().getItem());
@@ -109,7 +102,7 @@ public class PushDown {
             else {
                 this.automataStack.pop();
             }
-        }
+        }  //Very hard to read, probably needs to change
         else if (transition.getBehavior().getInput().getItem() == transition.getBehavior().getOutput().getItem() &&
         transition.getBehavior().getInput().getItem() == StackItems.PARENTHESIS
         && transition.getBehavior().getInput().getId().equals(Parenthesis.OPENING_P)) {
@@ -122,96 +115,9 @@ public class PushDown {
         }
     }
 
-    public boolean createStatements(String s){
-        //Get statement and split it due to the parenthesis
-        String[] splitStatement = s.split("(?<=\\()|(?=\\))"); // Breaks (A into ( A, or, B) into B )
-
-        //Create a string that can be read by a Scanner
-        String splitString = "";
-        for (String s1 : splitStatement) {
-            splitString = splitString + " " + s1;
-        }
-
-        boolean isOperator = false;
-        Statement currStatement;
-//        Scanner scanner = new Scanner(splitString);
-        Parser parser = Parser.of(splitString);
-        String word;
-        while (parser.hasNext()) {
-            word = parser.next();
-            if (word.equalsIgnoreCase("(") || word.equalsIgnoreCase(")")){
-                word = parser.next();
-            }
-            if (isVar(word)) {
-                currStatement = SingleVarStatement.getStatement(word);
-                if (isOperator) {
-                    placeHolder.addStatement(currStatement);
-                }
-                else {
-                    placeHolder = currStatement;
-                    isOperator = false;
-                }
-            }
-            else {
-                if (word.equalsIgnoreCase(Operator.NOT.toString())){
-                    placeHolder = new NotStatement.Builder().build();
-                    isOperator = true;
-                }
-                else if (word.equalsIgnoreCase(Operator.OR.toString())){
-                    placeHolder = new OrStatement.Builder(placeHolder).build();
-                    isOperator = true;
-                }
-                else if (word.equalsIgnoreCase(Operator.XOR.toString())){
-                    placeHolder = new XorStatement.Builder(placeHolder).build();
-                    isOperator = true;
-                }
-                else if (word.equalsIgnoreCase(Operator.AND.toString())){
-                    placeHolder = new AndStatement.Builder(placeHolder).build();
-                    isOperator = true;
-                }
-                else if (word.equalsIgnoreCase(Operator.IFF.toString())){
-                    placeHolder = new IffStatement.Builder(placeHolder).build();
-                    isOperator = true;
-                }
-                else {
-                    placeHolder = new IfStatement.Builder(placeHolder).build();
-                    isOperator = true;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isOperator(String s){
-        return Operator.contains(s);
-    }
-
-    public boolean isVar(String s){
-        return SingleVarStatement.VARS.contains(SingleVarStatement.of(s));
-    }
-
-    private Statement createStatement(String s){
-        if (s.equalsIgnoreCase(Operator.NOT.toString())){
-            return NotStatement.of();
-        }
-        else if (s.equalsIgnoreCase(Operator.AND.toString())){
-            return AndStatement.of();
-        }
-        else if (s.equalsIgnoreCase(Operator.OR.toString())){
-            return OrStatement.of();
-        }
-        else if (s.equalsIgnoreCase(Operator.XOR.toString())){
-            return XorStatement.of();
-        }
-        else if (s.equalsIgnoreCase(Operator.IFF.toString())){
-            return IffStatement.of();
-        }
-        else {
-            return IfStatement.of();
-        }
-    }
-
+    /*
+    Classify statements into types
+     */
     public Set classify(String s) {
         if (Operator.NON_NOT_OPERATORS.contains(Operator.fromString(s))) {
             return Operator.NON_NOT_OPERATORS;
@@ -230,6 +136,11 @@ public class PushDown {
         }
     }
 
+
+    /*
+    Parses the statement into the Parse Tree
+    Should probably move this to the parser.
+     */
     public Statement parseStatement(){
 
         boolean isOperator = false;
@@ -237,7 +148,7 @@ public class PushDown {
         String word;
         while(parser.hasNext()){
             word = parser.next();
-            if (isVar(word)){
+            if (SingleVarStatement.contains(word)){
                 if (isOperator){
                     previousStatement = previousStatement.addStatement(SingleVarStatement.getStatement(word));
                 }
@@ -289,16 +200,11 @@ public class PushDown {
         return previousStatement;
     }
 
-    public void createParser(String s){
-        String[] splitStatement = s.split("(?<=\\()|(?=\\))"); // Breaks (A into ( A, or, B) into B )
 
-        //Create a string that can be read by a Scanner
-        String splitString = "";
-        for (String s1 : splitStatement) {
-            splitString = splitString + " " + s1;
-        }
 
-        parser = Parser.of(splitString);
+    public void setParser(String s){ //ideally this would return a parser.
+
+        parser = Parser.of(Parser.splitStatement(s));
     }
 
 }

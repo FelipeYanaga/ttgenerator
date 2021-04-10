@@ -1,6 +1,6 @@
 package org.acme.pda;
 
-public enum StackItems implements Potato {
+public enum StackItems {
     PARENTHESIS,
     EMPTY;
 }

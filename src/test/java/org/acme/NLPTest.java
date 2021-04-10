@@ -1,6 +1,7 @@
 package org.acme;
 
 import org.acme.pda.*;
+import org.acme.statements.SingleVarStatement;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,37 +60,37 @@ public class NLPTest {
     @Test
     public void containsInput(){
         Input input = Input.of(State.START,Operator.NOT_SET, StackItems.EMPTY);
-        assert(Transition.containsInput(input));
+        assert(Transitions.containsInput(input));
     }
 
     @Test
     public void containsInputFalse(){
         Input input = Input.of(State.START, Operator.NON_NOT_OPERATORS, StackItems.PARENTHESIS);
-        Assertions.assertFalse(Transition.containsInput(input));
+        Assertions.assertFalse(Transitions.containsInput(input));
     }
 
     @Test
     public void containsTransitionTrue(){
-        assert(Transition.contains(Transition.START_ID));
+        assert(Transitions.contains(Transitions.START_ID));
     }
 
     @Test
     public void getTransition(){
         Input input = Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY);
-        assert(Transition.START_ID == Transition.getTransition(input));
+        assert(Transitions.START_ID == Transitions.getTransition(input));
     }
 
     @Test
     public void equals(){
         Input input = Input.of(State.START, SingleVarStatement.VARS,StackItems.EMPTY);
-        assert(Transition.START_ID.equals(Transition.getTransition(input)));
+        assert(Transitions.START_ID.equals(Transitions.getTransition(input)));
     }
 
     @Test
     public void inputEqualityRightSide(){
         Input input = Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY);
         Input input1 = Input.of(State.START, SingleVarStatement.VARS,StackItems.EMPTY);
-        assert(input.equals(Transition.START_ID.getBehavior().getInput()));
+        assert(input.equals(Transitions.START_ID.getBehavior().getInput()));
     }
 
     @Test
@@ -128,7 +129,7 @@ public class NLPTest {
     @Test
     public void pushItem(){
         Stack<StackItems> stack = new Stack<>();
-        stack.push(Transition.PARENTHESIS_OPEN_E.getBehavior().getOutput().getItem());
+        stack.push(Transitions.PARENTHESIS_OPEN_E.getBehavior().getOutput().getItem());
         assert(stack.peek().equals(StackItems.PARENTHESIS));
     }
 
@@ -136,7 +137,7 @@ public class NLPTest {
     public void popItem(){
         Stack<StackItems> stack = new Stack<>();
         stack.push(StackItems.EMPTY);
-        stack.push(Transition.PARENTHESIS_OPEN_E.getBehavior().getOutput().getItem());
+        stack.push(Transitions.PARENTHESIS_OPEN_E.getBehavior().getOutput().getItem());
         stack.pop();
         assert(stack.peek().equals(StackItems.EMPTY));
     }
@@ -199,16 +200,16 @@ public class NLPTest {
     @Test
     public void testIsVar(){
         SingleVarStatement.setVars(pda.getVars("A and B"));
-        assert(pda.isVar("A"));
+        assert(SingleVarStatement.contains("A"));
     }
 
     @Test
-    public void testBuilderSingleVar(){
-        String name = "A";
-        SingleVarStatement var = new SingleVarStatement.Builder(name).build();
-        SingleVarStatement.addVar(var);
-        assert(SingleVarStatement.contains(name));
+    public void testSplit(){
+        assert(Parser.splitStatement("A and (B or C)")
+                .equals(" A and ( B or C )"));
     }
+
+
 
 }
 

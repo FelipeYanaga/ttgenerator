@@ -1,13 +1,12 @@
-package org.acme.pda;
+package org.acme.statements;
 
-public class AndStatement implements Statement {
+public class IffStatement implements Statement {
     private Statement rightStatement;
     private Statement leftStatement;
-    private boolean value;
 
-    public AndStatement(){}
+    public IffStatement(){}
 
-    public static AndStatement of(){return new AndStatement();}
+    public static IffStatement of(){return new IffStatement();}
 
     public void setLeftStatement(Statement leftStatement) {
         this.leftStatement = leftStatement;
@@ -41,22 +40,21 @@ public class AndStatement implements Statement {
             this.leftStatement = statement;
         }
 
-        public AndStatement build(){
-            return new AndStatement(this);
+        public IffStatement build(){
+            return new IffStatement(this);
         }
     }
 
-    private AndStatement(AndStatement.Builder builder) {
+    private IffStatement(IffStatement.Builder builder) {
         this.leftStatement = builder.leftStatement;
     }
 
     public boolean evaluate(){
         if ((this.rightStatement != null) && (this.leftStatement != null)){
-            return rightStatement.evaluate() && leftStatement.evaluate();
+            return rightStatement.evaluate() == leftStatement.evaluate();
         }
         else {
             throw new RuntimeException("Error in statement construction!");
         }
     }
-
 }

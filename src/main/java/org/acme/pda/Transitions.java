@@ -1,11 +1,13 @@
 package org.acme.pda;
 
+import org.acme.statements.SingleVarStatement;
+
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public enum Transition {
+public enum Transitions {
     //ID Transitions
     START_ID(Tuple.of(
             Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY),
@@ -73,46 +75,14 @@ public enum Transition {
             Input.of(State.ID, Operator.NON_NOT_OPERATORS, StackItems.PARENTHESIS),
             Output.of(State.OPERATOR, StackItems.PARENTHESIS))
     );
-//    OR_E(Tuple.formTuple(
-//            Input.formInput(State.ID, Operator.OPERATORS, StackItems.EMPTY),
-//            Output.formOutput(State.OPERATOR, StackItems.EMPTY))
-//        ),
-//    OR_P(Tuple.formTuple(
-//            Input.formInput(State.ID, Operator.OPERATORS, StackItems.PARENTHESIS),
-//            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS))
-//    ),
-//    IFF_E(Tuple.formTuple(
-//            Input.formInput(State.ID, Operator.OPERATORS, StackItems.EMPTY),
-//            Output.formOutput(State.OPERATOR, StackItems.EMPTY))
-//        ),
-//    IFF_P(Tuple.formTuple(
-//            Input.formInput(State.ID, Operator.OPERATORS, StackItems.PARENTHESIS),
-//            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS))
-//    ),
-//    IF_E(Tuple.formTuple(
-//            Input.formInput(State.ID, Operator.OPERATORS, StackItems.EMPTY),
-//            Output.formOutput(State.OPERATOR, StackItems.EMPTY))
-//        ),
-//    IF_P(Tuple.formTuple(
-//            Input.formInput(State.ID, Operator.OPERATORS, StackItems.PARENTHESIS),
-//            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS))
-//    ),
-//    XOR_E(Tuple.formTuple(
-//            Input.formInput(State.ID, Operator.OPERATORS, StackItems.EMPTY),
-//            Output.formOutput(State.OPERATOR, StackItems.EMPTY))
-//    ),
-//    XOR_P(Tuple.formTuple(
-//            Input.formInput(State.ID, Operator.OPERATORS, StackItems.PARENTHESIS),
-//            Output.formOutput(State.OPERATOR, StackItems.PARENTHESIS))
-//            );
 
-    Transition(Tuple tuple) {
+    Transitions(Tuple tuple) {
         this.behavior = tuple;
     }
 
     private final Tuple behavior;
 
-    public static EnumSet<Transition> TRANSITIONS = EnumSet.allOf(Transition.class);
+    public static EnumSet<Transitions> TRANSITIONS = EnumSet.allOf(Transitions.class);
 
     public Tuple getBehavior(){ return this.behavior;}
 
@@ -126,11 +96,11 @@ public enum Transition {
     Map of the inputs to the transitions.
     Maybe having both of these at the same time might be a little bit of a stretch
      */
-    private static final Map<Input, Transition> INPUTS_TO_TRANSITION = Arrays.stream(values())
+    private static final Map<Input, Transitions> INPUTS_TO_TRANSITION = Arrays.stream(values())
             .collect(Collectors.toUnmodifiableMap(o -> o.getBehavior().getInput(), o -> o));
 
 
-    public static boolean contains(Transition transition) {
+    public static boolean contains(Transitions transition) {
         return INPUTS_TO_TRANSITION.containsValue(transition);
     }
 
@@ -138,7 +108,7 @@ public enum Transition {
         return INPUTS_TO_OUTPUTS.containsKey(input);
     }
 
-    public static Transition getTransition(Input input) {
+    public static Transitions getTransition(Input input) {
         return INPUTS_TO_TRANSITION.get(input);
     }
 }

@@ -2,7 +2,7 @@ package org.acme.pda;
 
 import java.util.EnumSet;
 
-public enum State implements Potato {
+public enum State {
     START,
     ID,
     OPERATOR;

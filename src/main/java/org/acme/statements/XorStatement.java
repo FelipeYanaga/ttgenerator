@@ -1,12 +1,12 @@
-package org.acme.pda;
+package org.acme.statements;
 
-public class OrStatement implements Statement {
+public class XorStatement implements Statement {
     private Statement rightStatement;
     private Statement leftStatement;
 
-    public OrStatement(){}
+    public XorStatement(){}
 
-    public static OrStatement of(){return new OrStatement();}
+    public static XorStatement of(){return new XorStatement();}
 
     public void setLeftStatement(Statement leftStatement) {
         this.leftStatement = leftStatement;
@@ -32,6 +32,15 @@ public class OrStatement implements Statement {
         }
     }
 
+    public boolean evaluate(){
+        if ((this.rightStatement != null) && (this.leftStatement != null)){
+            return rightStatement.evaluate() != leftStatement.evaluate();
+        }
+        else {
+            throw new RuntimeException("Error in statement construction!");
+        }
+    }
+
     public static class Builder {
         //Required parameters
         private final Statement leftStatement;
@@ -40,22 +49,12 @@ public class OrStatement implements Statement {
             this.leftStatement = statement;
         }
 
-        public OrStatement build(){
-            return new OrStatement(this);
+        public XorStatement build(){
+            return new XorStatement(this);
         }
     }
 
-    private OrStatement(Builder builder) {
+    private XorStatement(XorStatement.Builder builder) {
         this.leftStatement = builder.leftStatement;
     }
-
-    public boolean evaluate(){
-        if ((this.rightStatement != null) && (this.leftStatement != null)){
-            return rightStatement.evaluate() || leftStatement.evaluate();
-        }
-        else {
-            throw new RuntimeException("Error in statement construction!");
-        }
-    }
-
 }

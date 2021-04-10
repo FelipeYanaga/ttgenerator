@@ -1,4 +1,4 @@
-package org.acme.pda;
+package org.acme.statements;
 
 public interface Statement {
 

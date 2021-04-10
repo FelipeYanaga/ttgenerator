@@ -22,12 +22,15 @@ public class Parser {
         return scanner.hasNext();
     }
 
-    public boolean isOpeningParenthesisNext(){
-        return scanner.hasNext("\\(");
-    }
+    public static String splitStatement(String s){
+        String[] splitStatement = s.split("(?<=\\()|(?=\\))");
 
-    public boolean isClosingParenthesisNext(){
-        return scanner.hasNext("\\)");
+        String splitString = "";
+        for (String s1 : splitStatement) {
+            splitString = splitString + " " + s1;
+        }
+
+        return splitString;
     }
 
     

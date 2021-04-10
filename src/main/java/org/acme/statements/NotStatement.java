@@ -1,4 +1,4 @@
-package org.acme.pda;
+package org.acme.statements;
 
 public class NotStatement implements Statement {
     private Statement rightStatement;

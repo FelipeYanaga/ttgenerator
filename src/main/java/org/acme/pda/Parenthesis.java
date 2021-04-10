@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public enum Parenthesis implements Potato{
+public enum Parenthesis {
     START_PARENTHESIS("("),
     END_PARENTHESIS(")");
 

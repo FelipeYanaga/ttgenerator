@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public enum Operator implements Potato {
+public enum Operator {
     AND("and"),
     OR("or"),
     XOR("xor"),
