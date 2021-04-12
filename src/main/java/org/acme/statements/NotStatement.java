@@ -2,6 +2,7 @@ package org.acme.statements;
 
 public class NotStatement implements Statement {
     private Statement rightStatement;
+    private String statement;
 
     public void setRightStatement(Statement statement) {this.rightStatement = statement;}
 
@@ -33,6 +34,22 @@ public class NotStatement implements Statement {
         }
         else {
             throw new RuntimeException("Error in statement construction!");
+        }
+    }
+
+    public String getString() {
+        if (this.statement == null){
+            setString();
+            return statement;
+        }
+        else {
+            return statement;
+        }
+    }
+
+    private void setString(){
+        if (rightStatement != null){
+            this.statement = "not" +  this.rightStatement.getString();
         }
     }
 }

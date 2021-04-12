@@ -6,4 +6,6 @@ public interface Statement {
 
     public boolean evaluate();
 
+    public String getString();
+
 }

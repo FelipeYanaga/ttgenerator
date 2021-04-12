@@ -13,10 +13,29 @@ public class PushDown {
     private Stack<StackItems> automataStack = new Stack<>(); //Automata Stack
     private State state; //Automata State
     private Parser parser; //Scanner
+    private String uInput;
+    private Statement mainStatement;
 
-    public PushDown(){
+    public PushDown(){ //add set input to this and add string as a parameter
         this.state = State.START;
         automataStack.push(StackItems.EMPTY);
+    }
+
+    /*
+    Creating the main Statement
+     */
+    public void createMainStatement(){
+        if (validInput(uInput)) {
+            createParser();
+            mainStatement = parseStatement();
+        }
+    }
+
+    /*
+    Get statement
+     */
+    public Statement getMainStatement(){
+        return mainStatement;
     }
 
     /*
@@ -200,11 +219,30 @@ public class PushDown {
         return previousStatement;
     }
 
+    public void setInput(String s){
+        this.uInput = s;
+        createParser();
+    }
 
 
-    public void setParser(String s){ //ideally this would return a parser.
+    private void createParser(){ //ideally this would return a parser.
 
-        parser = Parser.of(Parser.splitStatement(s));
+        parser = Parser.of(Parser.splitStatement(uInput));
+    }
+
+    /*
+    Might not be the ideal place to put this
+     */
+
+    public List<boolean []> evaluate(){
+        List<boolean []> result = new ArrayList<>();
+        for (boolean [] line : Evaluator.getPerm()){
+            boolean [] stat = new boolean[1];
+            SingleVarStatement.setValues(line);
+            stat[0] = mainStatement.evaluate();
+            result.add(stat);
+        }
+        return result;
     }
 
 }

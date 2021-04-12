@@ -3,6 +3,7 @@ package org.acme.statements;
 public class XorStatement implements Statement {
     private Statement rightStatement;
     private Statement leftStatement;
+    private String statement;
 
     public XorStatement(){}
 
@@ -29,6 +30,25 @@ public class XorStatement implements Statement {
             else {
                 throw new RuntimeException("This statement is already complete.");
             }
+        }
+    }
+
+    /*
+    Return the string that this represents
+     */
+    public String getString() {
+        if (this.statement == null){
+            setString();
+            return statement;
+        }
+        else {
+            return statement;
+        }
+    }
+
+    private void setString(){
+        if (rightStatement != null && leftStatement != null){
+            this.statement = this.leftStatement.getString() + "xor" + this.rightStatement.getString();
         }
     }
 

@@ -18,70 +18,70 @@ public class ParseStatementTest {
 
     @Test
     public void testRegularInput(){
-        pda.setParser("A and B");
+        pda.setInput("A and B");
         Statement statement = new AndStatement();
         assert(pda.parseStatement().getClass() == statement.getClass());
     }
 
     @Test
     public void testRegularInputNot(){
-        pda.setParser("not A and B");
+        pda.setInput("not A and B");
         Statement statement = new AndStatement();
         assert(pda.parseStatement().getClass() == statement.getClass());
     }
 
     @Test
     public void testRegularInputNotOnly(){
-        pda.setParser("not A");
+        pda.setInput("not A");
         Statement statement = new NotStatement();
         assert(pda.parseStatement().getClass() == statement.getClass());
     }
 
     @Test
     public void testRegularInputVarOnly(){
-        pda.setParser("A");
+        pda.setInput("A");
         Statement statement = new SingleVarStatement("a");
         assert(pda.parseStatement().getClass() == statement.getClass());
     }
 
     @Test
     public void testRegularInputLong(){
-        pda.setParser("A and B or C");
+        pda.setInput("A and B or C");
         Statement statement = new OrStatement();
         assert(pda.parseStatement().getClass() == statement.getClass());
     }
 
     @Test
     public void testParenthesisNormal(){
-        pda.setParser("(A and B)");
+        pda.setInput("(A and B)");
         Statement statement = new AndStatement();
         assert(pda.parseStatement().getClass() == statement.getClass());
     }
 
     @Test
     public void testParenthesisNot(){
-        pda.setParser("not (A and B)");
+        pda.setInput("not (A and B)");
         Statement statement = new NotStatement();
         assert(pda.parseStatement().getClass() == statement.getClass());
     }
 
     @Test
     public void testParenthesisLong(){
-        pda.setParser("(A and B) iff (B or C)");
+        pda.setInput("(A and B) iff (B or C)");
         Statement statement = new IffStatement();
         assert(pda.parseStatement().getClass() == statement.getClass());
     }
 
     @Test
     public void testParenthesisDouble(){
-        pda.setParser("((A and B) iff (B or C))");
+        pda.setInput("((A and B) iff (B or C))");
         Statement statement = new IffStatement();
         assert(pda.parseStatement().getClass() == statement.getClass());
     }
 
     @Test
     public void testParenthesisTriple(){
-        pda.setParser("((not (A and B) iff (A and (B and C)))");
+        pda.setInput("((not (A and B) iff (A and (B and C)))");
         Statement statement = new IffStatement();
         assert(pda.parseStatement() instanceof IffStatement);
     }
@@ -94,23 +94,23 @@ public class ParseStatementTest {
 
     @Test
     public void testEvaluateAndFalse(){
-        pda.setParser("A and B");
+        pda.setInput("A and B");
         Assertions.assertFalse((pda.parseStatement().evaluate()));
     }
 
     @Test
     public void testEvaluateAndTrue(){
-        pda.setParser("A and B");
+        pda.setInput("A and B");
         SingleVarStatement.setVars(pda.getVars("A and B"));
-        SingleVarStatement.setValues(Evaluator.getPerm().get(3));
+        SingleVarStatement.setValues(Evaluator.getPerm().get(0));
         assert((pda.parseStatement().evaluate()));
     }
 
     @Test
     public void testEvaluateNotTrue(){
-        pda.setParser("not A");
+        pda.setInput("not A");
         SingleVarStatement.setVars(pda.getVars("A"));
-        SingleVarStatement.setValues(Evaluator.getPerm().get(1));
+        SingleVarStatement.setValues(Evaluator.getPerm().get(0));
         Assertions.assertFalse((pda.parseStatement().evaluate()));
     }
 

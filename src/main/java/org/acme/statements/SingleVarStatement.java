@@ -6,17 +6,17 @@ import java.util.stream.Collectors;
 public class SingleVarStatement implements Statement {
 
     //Note that the vars are held in the order in which they are declared.
-    public static Set<SingleVarStatement> VARS = new HashSet<>();
+    public static Set<SingleVarStatement> VARS = new LinkedHashSet<>();
     private final String name;
     private boolean value;
-    private static Map<String, SingleVarStatement> VAR_MAP;
+    public static Map<String, SingleVarStatement> VAR_MAP;
 
     /*
     Created the map to facilitate getting objects
     Could probably delete the Set functionality then
      */
     public SingleVarStatement(String name){
-        this.name = name;
+        this.name = name.trim();
     }
 
     /*
@@ -26,7 +26,7 @@ public class SingleVarStatement implements Statement {
         return new SingleVarStatement(name);
     }
 
-    public String getName(){
+    public String getString(){
         return this.name;
     }
 
@@ -56,7 +56,7 @@ public class SingleVarStatement implements Statement {
     public static void setVars(Set<SingleVarStatement> vars) {
         VARS = vars;
         VAR_MAP = VARS.stream()
-                .collect(Collectors.toUnmodifiableMap(SingleVarStatement::getName, o-> o));
+                .collect(Collectors.toUnmodifiableMap(SingleVarStatement::getString, o-> o));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class SingleVarStatement implements Statement {
         private final String name;
 
         public Builder(String name){
-            this.name = name;
+            this.name = name.trim();
         }
 
         public SingleVarStatement build(){

@@ -3,6 +3,7 @@ package org.acme.statements;
 public class OrStatement implements Statement {
     private Statement rightStatement;
     private Statement leftStatement;
+    private String statement;
 
     public OrStatement(){}
 
@@ -14,6 +15,25 @@ public class OrStatement implements Statement {
 
     public void setRightStatement(Statement rightStatement) {
         this.rightStatement = rightStatement;
+    }
+
+    /*
+    Return the string that this represents
+     */
+    public String getString() {
+        if (this.statement == null){
+            setString();
+            return statement;
+        }
+        else {
+            return statement;
+        }
+    }
+
+    private void setString(){
+        if (rightStatement != null && leftStatement != null){
+            this.statement = this.leftStatement.getString() + "or" + this.rightStatement.getString();
+        }
     }
 
     public Statement addStatement(Statement statement) {

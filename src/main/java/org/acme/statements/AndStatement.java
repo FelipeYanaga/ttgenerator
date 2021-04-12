@@ -3,7 +3,7 @@ package org.acme.statements;
 public class AndStatement implements Statement {
     private Statement rightStatement;
     private Statement leftStatement;
-    private boolean value;
+    private String statement;
 
     public AndStatement(){}
 
@@ -30,6 +30,25 @@ public class AndStatement implements Statement {
             else {
                 throw new RuntimeException("This statement is already complete.");
             }
+        }
+    }
+
+    /*
+    Return the string that this represents
+     */
+    public String getString() {
+        if (this.statement == null){
+            setString();
+            return statement;
+        }
+        else {
+            return statement;
+        }
+    }
+
+    private void setString(){
+        if (rightStatement != null && leftStatement != null){
+            this.statement = this.leftStatement.getString() + " " + "and" + " " +  this.rightStatement.getString();
         }
     }
 
