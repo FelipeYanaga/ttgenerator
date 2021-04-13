@@ -173,7 +173,7 @@ public class NLPTest {
 
     @BeforeEach
     void beforePda(){
-        this.pda = new PushDown();
+        this.pda = new PushDown("A");
         this.vars = new HashSet<SingleVarStatement>();
     }
 

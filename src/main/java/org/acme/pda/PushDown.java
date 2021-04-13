@@ -16,19 +16,28 @@ public class PushDown {
     private String uInput;
     private Statement mainStatement;
 
-    public PushDown(){ //add set input to this and add string as a parameter
+    public PushDown(String s){ //add set input to this and add string as a parameter
         this.state = State.START;
         automataStack.push(StackItems.EMPTY);
+        this.uInput = s;
+        SingleVarStatement.setVars(this.getVars(s));
+        createParser();
+        createMainStatement();
     }
+
+    /*Set Input
+
+     */
+    public void setInput(String s){
+        this.uInput = s;
+    }
+
 
     /*
     Creating the main Statement
      */
     public void createMainStatement(){
-        if (validInput(uInput)) {
-            createParser();
             mainStatement = parseStatement();
-        }
     }
 
     /*
@@ -66,11 +75,11 @@ public class PushDown {
         return vars;
     }
 
-    public boolean validInput(String s) {
+    public boolean validInput() {
         //Get statement and split it due to the parenthesis
 
 
-        Parser parser1 = Parser.of(Parser.splitStatement(s));
+        Parser parser1 = Parser.of(Parser.splitStatement(uInput));
         while (parser1.hasNext()){
             Set word = classify(parser1.next());
             Input input = Input.of(this.state, word ,automataStack.peek());
@@ -217,11 +226,6 @@ public class PushDown {
 
 
         return previousStatement;
-    }
-
-    public void setInput(String s){
-        this.uInput = s;
-        createParser();
     }
 
 

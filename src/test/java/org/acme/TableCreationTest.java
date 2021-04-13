@@ -13,19 +13,11 @@ public class TableCreationTest {
 
     private PushDown pda;
 
-    @BeforeEach
-    public void beforeEach(){
-        this.pda = new PushDown();
-    }
-
 
     @Test
     public void testHeader(){ //simplify process of making the automaton work JESUS
         String s = "A and B";
-        SingleVarStatement.setVars(pda.getVars(s));
-        pda.setInput(s);
-        pda.parseStatement();
-        pda.createMainStatement();
+        pda = new PushDown(s);
         String [] correct = new String[3];
         correct[0] = "A";
         correct[1] = "B";

@@ -16,10 +16,9 @@ public class Main {
 //        for (boolean[] line : results){
 //            System.out.println(Arrays.toString(line));
 //        }
-        PushDown pda = new PushDown();
+        PushDown pda = new PushDown("A and B");
         String s = "A and B";
         SingleVarStatement.setVars(pda.getVars(s));
-        pda.setInput(s);
         pda.parseStatement();
         pda.createMainStatement();
         String [] correct = new String[3];

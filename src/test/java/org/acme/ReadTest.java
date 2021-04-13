@@ -8,120 +8,127 @@ import org.junit.jupiter.api.Test;
 
 public class ReadTest {
 
-    private PushDown pushDown;
-
-    @BeforeEach
-    void before() {
-        this.pushDown = new PushDown();
-        pushDown.getVars("id and B and C and A");
-    }
-
     @Test
     public void readInput(){
-        PushDown pda = new PushDown();
-        assert(pda.validInput("id and id"));
+        PushDown pda = new PushDown("id and id");
+        assert(pda.validInput());
     }
 
     @Test
     public void readInputSimpleP(){
-        PushDown pda = new PushDown();
-        assert(pda.validInput("(id and id)"));
+        PushDown pda = new PushDown("(id and id)");
+        assert(pda.validInput());
     }
 
     @Test
     public void pushParenthesis(){ //See everything through with the parenthesis stuff
-        PushDown pda = new PushDown();
-        pda.validInput("(");
+        PushDown pda = new PushDown("(");
+        pda.validInput();
         assert(pda.getAutomataStack().peek().equals(StackItems.PARENTHESIS));
     }
 
     @Test
     public void popParenthesis(){
-        PushDown pda = new PushDown();
-        assert(pda.validInput("(id)"));
+        PushDown pda = new PushDown("(id)");
+        assert(pda.validInput());
     }
 
     @Test
     public void readInputXor(){
-        PushDown pda = new PushDown();
-        assert(pda.validInput("(id xor id)"));
+        PushDown pda = new PushDown("(id xor id)");
+        assert(pda.validInput());
     }
 
     @Test
     public void readNot(){
-        PushDown pda = new PushDown();
-        assert(pda.validInput("not (id or id)"));
+        PushDown pda = new PushDown("not (id or id)");
+        assert(pda.validInput());
     }
 
     @Test
     public void readNotOperator(){
-        PushDown pda = new PushDown();
-        assert(pda.validInput("not (id iff not id)"));
+        PushDown pda = new PushDown("not (id iff not id)");
+        assert(pda.validInput());
     }
 
     @Test
     public void readTwoParenthesis(){
-        assert(pushDown.validInput("(id or not id) iff (not id xor id)"));
+        PushDown pda = new PushDown("(id or not id) iff (not id xor id)");
+        assert(pda.validInput());
     }
 
     @Test
     public void testReadDoubleP(){
-        assert (pushDown.validInput("((id or not id))"));
+        PushDown pda = new PushDown("((id or not id))");
+        assert (pda.validInput());
     }
 
     @Test
     public void testReadDouble(){
-        pushDown.validInput("((id))");
-        assert(pushDown.getAutomataStack().peek() == StackItems.EMPTY);
+        PushDown pda = new PushDown("((id))");
+        assert(pda.getAutomataStack().peek() == StackItems.EMPTY);
     }
 
     @Test
     public void readNestedP(){
-        assert (pushDown.validInput("(id or not (id and id))"));
+        PushDown pda = new PushDown("(id or not (id and id))");
+        assert (pda.validInput());
     }
 
     @Test
     public void testDoubleNot(){
-        assert(pushDown.validInput("not not id"));
+
+        PushDown pda = new PushDown("not not id");
+        assert(pda.validInput());
     }
 
     @Test
     public void testDoubleNotAndP(){
-        assert(pushDown.validInput("not (not id)"));
+        PushDown pda = new PushDown("not (not id)");
+        assert(pda.validInput());
     }
 
     @Test
     public void testDoubleNotAndPUnconventional(){
-        assert(pushDown.validInput("not (id and (id or id))"));
+        PushDown pda = new PushDown("not (id and (id or id))");
+        assert(pda.validInput());
     }
 
     @Test
     public void testDoublePTough(){
-        assert(pushDown.validInput("not (id and (id or id))"));
+
+        PushDown pda = new PushDown("not (id and (id or id))");
+        assert(pda.validInput());
     }
 
     @Test
     public void readTripleP(){
-        assert(pushDown.validInput("(((id)))"));
+        PushDown pda = new PushDown("(((id)))");
+        assert(pda.validInput());
     }
 
     @Test
     public void readVars(){
-        assert(pushDown.validInput("A and B and C"));
+
+        PushDown pda = new PushDown("A and B and C");
+        assert(pda.validInput());
     }
 
     @Test
     public void readInvalidInput(){
-        Assertions.assertFalse(pushDown.validInput("A and"));
+        PushDown pda = new PushDown("A and");
+        Assertions.assertFalse(pda.validInput());
     }
 
     @Test
     public void readInvalidInputNot(){
-        Assertions.assertFalse(pushDown.validInput("not"));
+        PushDown pda = new PushDown("not");
+        Assertions.assertFalse(pda.validInput());
     }
 
     @Test
     public void readInvalidInputDoubleP(){
-        Assertions.assertFalse(pushDown.validInput("(A and B"));
+        PushDown pda = new PushDown("(A and B");
+        Assertions.assertFalse(pda.validInput());
     }
 }

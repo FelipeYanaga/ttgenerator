@@ -31,7 +31,7 @@ public class PeachResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public List<boolean []> add(Peach peach){
-        PushDown pda = new PushDown();
+        PushDown pda = new PushDown(peach.input);
         SingleVarStatement.setVars(pda.getVars(peach.input));
         values = Evaluator.getPerm();
         return values;
