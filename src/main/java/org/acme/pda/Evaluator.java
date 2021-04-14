@@ -6,7 +6,7 @@ import org.acme.statements.Statement;
 import java.util.*;
 
 public class Evaluator {
-    public static int varNumber = SingleVarStatement.VARS.size(); //Number of vars
+    public static int varNumber; //Number of vars
 
     /*
     Get a better name for this

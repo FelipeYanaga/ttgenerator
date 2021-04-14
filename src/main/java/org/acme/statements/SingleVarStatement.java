@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 public class SingleVarStatement implements Statement {
 
     //Note that the vars are held in the order in which they are declared.
+    //Create Instances of this, instead of static methods
     public static Set<SingleVarStatement> VARS = new LinkedHashSet<>();
     private final String name;
     private boolean value;

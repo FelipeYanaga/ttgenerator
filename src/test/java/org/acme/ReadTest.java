@@ -2,11 +2,15 @@ package org.acme;
 
 import org.acme.pda.PushDown;
 import org.acme.pda.StackItems;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.TimeUnit;
+
 public class ReadTest {
+
 
     @Test
     public void readInput(){
@@ -77,7 +81,6 @@ public class ReadTest {
 
     @Test
     public void testDoubleNot(){
-
         PushDown pda = new PushDown("not not id");
         assert(pda.validInput());
     }
@@ -96,7 +99,6 @@ public class ReadTest {
 
     @Test
     public void testDoublePTough(){
-
         PushDown pda = new PushDown("not (id and (id or id))");
         assert(pda.validInput());
     }
@@ -109,7 +111,6 @@ public class ReadTest {
 
     @Test
     public void readVars(){
-
         PushDown pda = new PushDown("A and B and C");
         assert(pda.validInput());
     }

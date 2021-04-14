@@ -79,9 +79,8 @@ public class ParseStatementTest {
 
     @Test
     public void testParenthesisTriple(){
-        this.pda = new PushDown("((not (A and B) iff (A and (B and C)))");
-        Statement statement = new IffStatement();
-        assert(pda.parseStatement() instanceof IffStatement);
+        this.pda = new PushDown("((not (A and B)) iff (A and (B and C)))");
+        assert(pda.getMainStatement() instanceof IffStatement);
     }
 
     @Test
