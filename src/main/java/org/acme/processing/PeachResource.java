@@ -18,23 +18,25 @@ import java.util.Set;
 public class PeachResource {
 
     private List<boolean []> values;
+    private TruthTable table;
 
     public PeachResource(){
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<boolean []> list(){
-        return values;
+    public TruthTable list(){
+        return table;
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public List<boolean []> add(Peach peach){
+    public TruthTable add(Peach peach){
+        this.table = new TruthTable();
         PushDown pda = new PushDown(peach.input);
-        SingleVarStatement.setVars(pda.getVars(peach.input));
-        values = Evaluator.getPerm();
-        return values;
+        table.statements = Evaluator.header(pda);
+        table.potato = Evaluator.makeTable(pda);
+        return table;
     }
 
 }

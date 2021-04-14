@@ -32,7 +32,7 @@ public class OrStatement implements Statement {
 
     private void setString(){
         if (rightStatement != null && leftStatement != null){
-            this.statement = this.leftStatement.getString() + "or" + this.rightStatement.getString();
+            this.statement = this.leftStatement.getString() + " " + "or" + " " + this.rightStatement.getString();
         }
     }
 

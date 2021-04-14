@@ -9,8 +9,12 @@
         app.controller("PotatoManagementController", function($scope, $http) {
 
             //
-            $scope.potatoes = [];
-            $scope.header = []; //This should be the first line
+            $scope.potatotes = []; // How to loop through lines though
+            $scope.header = [];//This should be the first line
+
+            $scope.get = function(num) {
+                return num;
+            }
 
             $scope.form = {
                 input: "",
@@ -40,7 +44,9 @@
                     method: 'GET',
                     url: '/peach'
                 }).then(function successCallback(response) {
-                    $scope.potatoes = response.data;
+                    $scope.header = response.data.statements;
+                    $scope.potatoes = response.data.potato;
+
                 }, function errorCallback(response) {
                     console.log(response.statusText);
                 });
@@ -73,8 +79,23 @@
     <input type="submit" value="Save"/>
 </form>
 <h1>List</h1>
-<div class="row" ng-repeat="potato in potatoes">
-    <div class="line">{{potato}}</div>
+<div class="a">
+    <table>
+        <thead>
+            <tr>
+                <th ng-repeat="s in header">
+                    {{s}}
+                </th>
+            </tr>
+        </thead>
+        <tbody >
+            <tr ng-repeat="a in potatoes">
+                <td ng-repeat="i in a track by $index">
+                    {{i.toString()}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>
