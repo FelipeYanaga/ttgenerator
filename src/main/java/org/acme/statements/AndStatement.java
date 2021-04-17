@@ -48,7 +48,7 @@ public class AndStatement implements Statement {
 
     private void setString(){
         if (rightStatement != null && leftStatement != null){
-            this.statement = this.leftStatement.getString() + " " + "and" + " " +  this.rightStatement.getString();
+            this.statement = String.format("%s and %s", this.leftStatement.getString(), this.rightStatement.getString());
         }
     }
 

@@ -49,7 +49,7 @@ public class NotStatement implements Statement {
 
     private void setString(){
         if (rightStatement != null){
-            this.statement = "not" +  this.rightStatement.getString();
+            this.statement = String.format("not %s", this.rightStatement.getString());
         }
     }
 }

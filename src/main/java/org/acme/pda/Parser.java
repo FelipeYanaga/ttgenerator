@@ -7,7 +7,7 @@ public class Parser {
     private final Scanner scanner;
 
     private Parser(String s){
-        this.scanner = new Scanner(s);
+        this.scanner = new Scanner(splitStatement(s));
     }
 
     public static Parser of(String s){

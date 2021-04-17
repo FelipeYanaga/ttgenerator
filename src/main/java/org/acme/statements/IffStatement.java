@@ -48,7 +48,7 @@ public class IffStatement implements Statement {
 
     private void setString(){
         if (rightStatement != null && leftStatement != null){
-            this.statement = this.leftStatement.getString() + "iff" + this.rightStatement.getString();
+            this.statement = String.format("%s iff %s", this.leftStatement.getString(), this.rightStatement.getString());
         }
     }
 

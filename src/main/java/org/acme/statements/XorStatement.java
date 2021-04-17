@@ -48,7 +48,7 @@ public class XorStatement implements Statement {
 
     private void setString(){
         if (rightStatement != null && leftStatement != null){
-            this.statement = this.leftStatement.getString() + "xor" + this.rightStatement.getString();
+            this.statement = String.format("%s xor %s", this.leftStatement.getString(), this.rightStatement.getString());
         }
     }
 

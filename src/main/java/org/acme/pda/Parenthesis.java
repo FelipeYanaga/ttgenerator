@@ -23,4 +23,8 @@ public enum Parenthesis {
 
     public static Parenthesis fromString(String s) {return VALUES.get(s);}
 
+    public static boolean contains(String s){
+        return VALUES.containsKey(s);
+    }
+
 }

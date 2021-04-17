@@ -16,99 +16,79 @@ public class ParseStatementTest {
 
     @Test
     public void testRegularInput(){
-        this.pda = new PushDown("A and B");
-        Statement statement = new AndStatement();
-        assert(pda.getMainStatement().getClass() == statement.getClass());
+        AllVars vars = AllVars.of("A and B");
+        this.pda = new PushDown("A and B", vars);;
+        assert(pda.getMainStatement() instanceof AndStatement);
     }
 
     @Test
     public void testRegularInputNot(){
-        this.pda = new PushDown("not A and B");
-        Statement statement = new AndStatement();
-        assert(pda.getMainStatement().getClass() == statement.getClass());
+        AllVars vars = AllVars.of("not A and B");
+        this.pda = new PushDown("not A and B", vars);
+        assert(pda.getMainStatement() instanceof AndStatement);
     }
 
     @Test
     public void testRegularInputNotOnly(){
-        this.pda = new PushDown("not A");
-        Statement statement = new NotStatement();
-        assert(pda.getMainStatement().getClass() == statement.getClass());
+        AllVars vars = AllVars.of("not A");
+        this.pda = new PushDown("not A", vars);
+        assert(pda.getMainStatement() instanceof NotStatement);
     }
 
     @Test
     public void testRegularInputVarOnly(){
-        this.pda = new PushDown("A");
-        Statement statement = new SingleVarStatement("a");
-        assert(pda.getMainStatement().getClass() == statement.getClass());
+        AllVars vars = AllVars.of(" A ");
+        this.pda = new PushDown("A ", vars);
+        assert(pda.getMainStatement() instanceof SingleVarStatement);
     }
 
     @Test
     public void testRegularInputLong(){
-        this.pda = new PushDown("A and B or C");
-        Statement statement = new OrStatement();
-        assert(pda.getMainStatement().getClass() == statement.getClass());
+        AllVars vars = AllVars.of("A and B or C");
+        this.pda = new PushDown("A and B or C", vars);
+        assert(pda.getMainStatement() instanceof OrStatement);
     }
 
     @Test
     public void testParenthesisNormal(){
-        this.pda = new PushDown("(A and B)");
-        Statement statement = new AndStatement();
-        assert(pda.getMainStatement().getClass() == statement.getClass());
+        String s = "(A or B)";
+        AllVars vars = AllVars.of(s);
+        this.pda = new PushDown(s, vars);
+        assert(pda.getMainStatement() instanceof OrStatement);
     }
 
     @Test
     public void testParenthesisNot(){
-        this.pda = new PushDown("not (A and B)");
-        Statement statement = new NotStatement();
-        assert(pda.getMainStatement().getClass() == statement.getClass());
+        String s = "not (A or B)";
+        AllVars vars = AllVars.of(s);
+        this.pda = new PushDown(s, vars);
+        assert(pda.getMainStatement() instanceof NotStatement);
     }
 
     @Test
     public void testParenthesisLong(){
-        this.pda = new PushDown("(A and B) iff (B or C)");
-        Statement statement = new IffStatement();
-        assert(pda.getMainStatement().getClass() == statement.getClass());
-    }
-
-    @Test
-    public void testParenthesisDouble(){
-        this.pda = new PushDown("((A and B) iff (B or C))");
-        Statement statement = new IffStatement();
-        assert(pda.getMainStatement().getClass() == statement.getClass());
-    }
-
-    @Test
-    public void testParenthesisTriple(){
-        this.pda = new PushDown("((not (A and B)) iff (A and (B and C)))");
+        String s = "(A or B) iff (B and C)";
+        AllVars vars = AllVars.of(s);
+        this.pda = new PushDown(s, vars);
         assert(pda.getMainStatement() instanceof IffStatement);
     }
 
     @Test
-    public void testEvaluate(){
-        Statement statement = new SingleVarStatement("A");
-        Assertions.assertFalse(statement.evaluate());
+    public void testParenthesisDouble() {
+        String s = "((A and B) iff (B or C))";
+        AllVars vars = AllVars.of(s);
+        this.pda = new PushDown(s, vars);
+        assert(pda.getMainStatement() instanceof IffStatement);
     }
+
 
     @Test
-    public void testEvaluateAndFalse(){
-        pda = new PushDown("A and B");
-        Assertions.assertFalse((pda.getMainStatement().evaluate()));
+    public void testParenthesisTriple(){
+        String s = "((not (A and B)) iff (A and (B and C)))";
+        AllVars vars = AllVars.of(s);
+        this.pda = new PushDown(s, vars);
+        assert(pda.getMainStatement() instanceof IffStatement);
     }
-
-    @Test
-    public void testEvaluateAndTrue(){
-        pda = new PushDown("A and B");
-        SingleVarStatement.setValues(Evaluator.getPerm().get(0));
-        assert((pda.getMainStatement().evaluate()));
-    }
-
-    @Test
-    public void testEvaluateNotTrue(){
-        pda = new PushDown("not A");
-        SingleVarStatement.setValues(Evaluator.getPerm().get(0));
-        Assertions.assertFalse((pda.getMainStatement().evaluate()));
-    }
-
 
 
 

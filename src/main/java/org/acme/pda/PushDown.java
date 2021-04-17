@@ -13,32 +13,31 @@ public class PushDown {
     private Stack<StackItems> automataStack = new Stack<>(); //Automata Stack
     private State state; //Automata State
     private Parser parser; //Scanner
-    private String uInput;
-    private Statement mainStatement;
+    private String userInput; //String given by the user. Could be throw off if written properly
+    private Statement mainStatement; //Parsed Statement
+    private StatementVars statementVars; //Variables in this statement
+    private AllVars allVars; //Variables in this statement
 
-    public PushDown(String s){ //add set input to this and add string as a parameter
+    public PushDown(String s, AllVars allVars){ //add set input to this and add string as a parameter
         this.state = State.START;
         automataStack.push(StackItems.EMPTY);
-        this.uInput = s;
-        SingleVarStatement.setVars(this.getVars(s));
-        createParser();
-        createMainStatement();
+        this.userInput = s;
+        this.allVars = allVars;
+        this.statementVars = getStatementVars(s);
+        this.parser = Parser.of(s);
+        setMainStatement();
     }
 
-    /*Set Input
-
-     */
-    public void setInput(String s){
-        this.uInput = s;
+    private boolean setMainStatement(){
+        if (validInput()){
+            this.mainStatement = parseStatement();
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
-
-    /*
-    Creating the main Statement
-     */
-    public void createMainStatement(){
-            mainStatement = parseStatement();
-    }
 
     /*
     Get statement
@@ -57,34 +56,20 @@ public class PushDown {
      */
     public Stack<StackItems> getAutomataStack() { return this.automataStack;}
 
-    public Set<SingleVarStatement> getVars(String s){
-        Set<SingleVarStatement> vars = new HashSet<SingleVarStatement>();
-
-        //This is the statement for getting the vars from the pda
-        //Ideally I'd put this inside another method
-        Scanner scanner = new Scanner(Parser.splitStatement(s));
-        while (scanner.hasNext()) {
-            String s1 = scanner.next();
-            if (!Operator.contains(s1) && !s1.equalsIgnoreCase(")")
-            && !s1.equalsIgnoreCase("(")) {
-                vars.add(SingleVarStatement.of(s1));
-            }
-        }
-
-
-        return vars;
+    public StatementVars getStatementVars(String s){
+        return StatementVars.ofStatement(s,this.allVars);
     }
+
 
     public boolean validInput() {
         //Get statement and split it due to the parenthesis
 
 
-        Parser parser1 = Parser.of(Parser.splitStatement(uInput));
+        Parser parser1 = Parser.of(Parser.splitStatement(userInput));
         while (parser1.hasNext()){
             Set word = classify(parser1.next());
             Input input = Input.of(this.state, word ,automataStack.peek());
             if (Transitions.containsInput(input)){
-                System.out.println(input.getState() + " " + input.getItem() + " " + input.getId());
                 makeTransition(input);
             }
             else {
@@ -114,7 +99,7 @@ public class PushDown {
     Sees if the automaton ended up in a final state and empty stack
     Meaning it's accepted
      */
-    private boolean isAccepted() {
+    public boolean isAccepted() {
         return this.state == State.ID &&
                 this.automataStack.peek() == StackItems.EMPTY;
     }
@@ -160,7 +145,7 @@ public class PushDown {
             return Parenthesis.CLOSING_P;
         }
         else {
-            return SingleVarStatement.VARS;
+            return Identifier.IDS;
         }
     }
 
@@ -176,12 +161,12 @@ public class PushDown {
         String word;
         while(parser.hasNext()){
             word = parser.next();
-            if (SingleVarStatement.contains(word)){
+            if (statementVars.contains(word)){
                 if (isOperator){
-                    previousStatement = previousStatement.addStatement(SingleVarStatement.getStatement(word));
+                    previousStatement = previousStatement.addStatement(statementVars.getVar(word));
                 }
                 else {
-                    previousStatement = SingleVarStatement.getStatement(word);
+                    previousStatement = statementVars.getVar(word);
                     isOperator = false;
                 }
             }
@@ -223,30 +208,23 @@ public class PushDown {
                 return previousStatement;
             }
         }
-
-
         return previousStatement;
     }
 
 
-    private void createParser(){ //ideally this would return a parser.
-
-        parser = Parser.of(Parser.splitStatement(uInput));
-    }
-
     /*
     Might not be the ideal place to put this
      */
-
-    public List<boolean []> evaluate(){
-        List<boolean []> result = new ArrayList<>();
-        for (boolean [] line : Evaluator.getPerm()){
-            boolean [] stat = new boolean[1];
-            SingleVarStatement.setValues(line);
-            stat[0] = mainStatement.evaluate();
-            result.add(stat);
-        }
-        return result;
-    }
+//
+//    public List<boolean []> evaluate(){
+//        List<boolean []> result = new ArrayList<>();
+//        for (boolean [] line : Evaluator.getTruthFalsePermutations()){
+//            boolean [] stat = new boolean[1];
+//            SingleVarStatement.setValues(line);
+//            stat[0] = mainStatement.evaluate();
+//            result.add(stat);
+//        }
+//        return result;
+//    }
 
 }

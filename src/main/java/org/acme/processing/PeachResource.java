@@ -1,24 +1,25 @@
 package org.acme.processing;
 
-import org.acme.pda.Evaluator;
 import org.acme.pda.PushDown;
-import org.acme.statements.SingleVarStatement;
+import org.acme.table.TruthTable;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.awt.*;
 import java.util.List;
-import java.util.Set;
 
 @Path("/peach")
 public class PeachResource {
 
-    private List<boolean []> values;
     private TruthTable table;
+
+    /*
+    Notes:
+
+    1) Fix the lines produced, as sometimes it produces more than it needs to
+     */
 
     public PeachResource(){
     }
@@ -32,10 +33,7 @@ public class PeachResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public TruthTable add(Peach peach){
-        this.table = new TruthTable();
-        PushDown pda = new PushDown(peach.input);
-        table.statements = Evaluator.header(pda);
-        table.potato = Evaluator.makeTable(pda);
+        this.table = new TruthTable(peach.input);
         return table;
     }
 

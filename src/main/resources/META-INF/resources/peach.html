@@ -9,7 +9,7 @@
         app.controller("PotatoManagementController", function($scope, $http) {
 
             //
-            $scope.potatotes = []; // How to loop through lines though
+            $scope.lines = []; // How to loop through lines though
             $scope.header = [];//This should be the first line
 
             $scope.get = function(num) {
@@ -44,8 +44,8 @@
                     method: 'GET',
                     url: '/peach'
                 }).then(function successCallback(response) {
-                    $scope.header = response.data.statements;
-                    $scope.potatoes = response.data.potato;
+                    $scope.header = response.data.headerLine;
+                    $scope.lines = response.data.booleanLines;
 
                 }, function errorCallback(response) {
                     console.log(response.statusText);
@@ -65,10 +65,7 @@
             function _clearForm(){
                 $scope.form.input = "";
             }
-
-
         });
-
 
     </script>
 </head>
@@ -83,15 +80,15 @@
     <table>
         <thead>
             <tr>
-                <th ng-repeat="s in header">
+                <th ng-repeat="s in header.header">
                     {{s}}
                 </th>
             </tr>
         </thead>
         <tbody >
-            <tr ng-repeat="a in potatoes">
-                <td ng-repeat="i in a track by $index">
-                    {{i.toString()}}
+            <tr ng-repeat="a in lines">
+                <td ng-repeat="i in a.values track by $index">
+                    <div ngStyle = "{'color': i? 'green' : 'red'}" class="test"> {{i}} </div>
                 </td>
             </tr>
         </tbody>

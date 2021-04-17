@@ -2,25 +2,23 @@ package org.acme.pda;
 
 import org.acme.statements.SingleVarStatement;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public enum Transitions {
     //ID Transitions
     START_ID(Tuple.of(
-            Input.of(State.START, SingleVarStatement.VARS, StackItems.EMPTY),
+            Input.of(State.START, Identifier.IDS, StackItems.EMPTY),
             Output.of(State.ID, StackItems.EMPTY))),
     OPERATOR_ID(Tuple.of(
-            Input.of(State.OPERATOR, SingleVarStatement.VARS, StackItems.EMPTY),
+            Input.of(State.OPERATOR, Identifier.IDS, StackItems.EMPTY),
             Output.of(State.ID, StackItems.EMPTY))),
     PARENTHESIS_ID(Tuple.of(
-            Input.of(State.START, SingleVarStatement.VARS, StackItems.PARENTHESIS),
+            Input.of(State.START, Identifier.IDS, StackItems.PARENTHESIS),
             Output.of(State.ID, StackItems.PARENTHESIS))
     ),
     OPERATOR_ID_P(Tuple.of(
-            Input.of(State.OPERATOR, SingleVarStatement.VARS, StackItems.PARENTHESIS),
+            Input.of(State.OPERATOR, Identifier.IDS, StackItems.PARENTHESIS),
             Output.of(State.ID, StackItems.PARENTHESIS))),
 
     //Not transitions
@@ -82,6 +80,8 @@ public enum Transitions {
 
     private final Tuple behavior;
 
+    private static final Set<SingleVarStatement> VARS = new LinkedHashSet<>();
+
     public static EnumSet<Transitions> TRANSITIONS = EnumSet.allOf(Transitions.class);
 
     public Tuple getBehavior(){ return this.behavior;}
@@ -105,7 +105,7 @@ public enum Transitions {
     }
 
     public static boolean containsInput(Input input) {
-        return INPUTS_TO_OUTPUTS.containsKey(input);
+            return INPUTS_TO_OUTPUTS.containsKey(input);
     }
 
     public static Transitions getTransition(Input input) {
