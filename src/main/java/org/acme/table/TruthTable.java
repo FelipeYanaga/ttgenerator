@@ -11,7 +11,7 @@ import java.util.List;
 public class TruthTable {
     private final Statement[] statements; //for this to work you're going to have to create a name var in each stat
     private final AllVars vars;
-    public final List<BooleanLine> booleanLines; // going to have to add result in this to
+    private final List<BooleanLine> booleanLines; // going to have to add result in this to
     private final HeaderLine headerLine;
 
     public TruthTable(String s){

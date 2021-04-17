@@ -25,8 +25,7 @@ public class Evaluator {
     @return List with all of the permutations of T and F.
      */
     public List<BooleanLine> getTruthFalsePermutations(){
-//        varNumber = SingleVarStatement.VARS.size();
-        Set<boolean[]> lines = new LinkedHashSet<>();
+        Set<BooleanLine> lines = new LinkedHashSet<>();
         AllVars vars = table.getAllVars();
 
         //Set them equal to the two possible values
@@ -34,30 +33,28 @@ public class Evaluator {
         boolean[] line1 = new boolean[1];
         boolean[] line2 = new boolean[1];
         line1[0] = true;
-        lines.add(line1);
-        lines.add(line2); // don't need to set line2[0] to false, because it's default value
+        BooleanLine boolLine1 = BooleanLine.of(line1);
+        BooleanLine boolLine2 = BooleanLine.of(line2);
+        lines.add(boolLine1);
+        lines.add(boolLine2); // don't need to set line2[0] to false, because it's default value
 
         for (int i = 1; i < vars.size(); i++){
-            Set<boolean []> oneSet = new LinkedHashSet<>(lines); //prevent concurrency
-            for (boolean [] line : lines){
-                boolean[] nextLine = Arrays.copyOf(line, i + 1); //add one to size, b/c longer statement
+            Set<BooleanLine> oneSet = new LinkedHashSet<>(lines); //prevent concurrency
+            for (BooleanLine line : lines){
+                boolean[] nextLine = Arrays.copyOf(line.getValues(), i + 1); //add one to size, b/c longer statement
                 nextLine[i] = true;
-                oneSet.add(nextLine);
-                boolean[] otherLine = Arrays.copyOf(line, i + 1);
+                oneSet.add(BooleanLine.of(nextLine));
+                boolean[] otherLine = Arrays.copyOf(line.getValues(), i + 1);
                 otherLine[i] = false;
-                oneSet.add(otherLine);
+                oneSet.add(BooleanLine.of(otherLine));
             }
             lines = oneSet; //update lines
         }
 
-        lines.removeIf(o -> (o.length != vars.size())); //take out all leftovers
+        lines.removeIf(o -> (o.getValues().length != vars.size())); //take out all leftovers
 
-        List<BooleanLine> returnArray = new ArrayList<>();
-        for (boolean [] line : lines){
-            returnArray.add(BooleanLine.of(line));
-        }
+        return new ArrayList<>(lines);
 
-        return returnArray;
     }
 
     public List<BooleanLine> getLines(){
