@@ -1,174 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>code-with-quarkus - 1.0.0-SNAPSHOT</title>
-    <style>
-        h1, h2, h3, h4, h5, h6 {
-            margin-bottom: 0.5rem;
-            font-weight: 400;
-            line-height: 1.5;
-        }
+    <link rel="stylesheet" href="styles.css">
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("PotatoManagement",[]);
 
-        h1 {
-            font-size: 2.5rem;
-        }
+        //Controller Part
+        app.controller("PotatoManagementController", function($scope, $http) {
 
-        h2 {
-            font-size: 2rem
-        }
+            //
+            $scope.lines = []; // How to loop through lines though
+            $scope.header = [];//This should be the first line
 
-        h3 {
-            font-size: 1.75rem
+            $scope.get = function(num) {
+                return num;
+            }
 
-        }
+            $scope.form = {
+                input: "",
+            };
 
-        h4 {
-            font-size: 1.5rem
-        }
+            //Load the data from server
+            _refreshPageData();
 
-        h5 {
-            font-size: 1.25rem
-        }
+            $scope.add = function () {
+                var data = {"input": $scope.form.input};
 
-        h6 {
-            font-size: 1rem
-        }
+                $http({
+                    method: "POST",
+                    url: '/peach',
+                    data: angular.toJson(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(_success,_error);
+            }
 
-        .lead {
-            font-weight: 300;
-            font-size: 2rem;
-        }
+            /*Private Methods */
 
-        .banner {
-            font-size: 2.7rem;
-            margin: 0;
-            padding: 2rem 1rem;
-            background-color: #0d1c2c;
-            color: white;
-        }
+            //HTTP GET - get all legumes collection
+            function _refreshPageData() {
+                $http({
+                    method: 'GET',
+                    url: '/peach'
+                }).then(function successCallback(response) {
+                    $scope.header = response.data.headerLine;
+                    $scope.lines = response.data.booleanLines;
 
-        body {
-            margin: 0;
-            font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-        }
+                }, function errorCallback(response) {
+                    console.log(response.statusText);
+                });
+            }
 
-        code {
-            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            font-size: 87.5%;
-            color: #e83e8c;
-            word-break: break-word;
-        }
+            function _success(response) {
+                _refreshPageData();
+                _clearForm();
+            }
 
-        .left-column {
-            padding: .75rem;
-            max-width: 75%;
-            min-width: 55%;
-        }
+            function _error(response) {
+                alert(response.data.message || response.statusText);
+            }
 
-        .right-column {
-            padding: .75rem;
-            max-width: 25%;
-        }
+            //Clear the form
+            function _clearForm(){
+                $scope.form.input = "";
+            }
+        });
 
-        .container {
-            display: flex;
-            width: 100%;
-        }
-
-        li {
-            margin: 0.75rem;
-        }
-
-        .right-section {
-            margin-left: 1rem;
-            padding-left: 0.5rem;
-        }
-
-        .right-section h3 {
-            padding-top: 0;
-            font-weight: 200;
-        }
-
-        .right-section ul {
-            border-left: 0.3rem solid #71aeef;
-            list-style-type: none;
-            padding-left: 0;
-        }
-
-        .example-code {
-            border-left: 0.3rem solid #71aeef;
-            padding-left: 10px;
-        }
-
-        .example-code h3 {
-            font-weight: 200;
-        }
-    </style>
+    </script>
 </head>
-<body>
-
-<div class="banner lead">
-    Your new Cloud-Native application is ready!
-</div>
-
-<div class="container">
-    <div class="left-column">
-        <p class="lead"> Congratulations, you have created a new Quarkus cloud application.</p>
-
-        <h2>What is this page?</h2>
-
-        <p>This page is served by Quarkus. The source is in
-            <code>src/main/resources/META-INF/resources/index.html</code>.</p>
-
-        <h2>What are your next steps?</h2>
-
-        <p>If not already done, run the application in <em>dev mode</em> using: <code>./mvnw compile quarkus:dev</code>.
-        </p>
-        <ul>
-            <li>Your static assets are located in <code>src/main/resources/META-INF/resources</code>.</li>
-            <li>Configure your application in <code>src/main/resources/application.properties</code>.</li>
-            <li>Quarkus now ships with a <a href="/q/dev/">Dev UI</a> (available in dev mode only)</li>
-            <li>Play with the getting started example code located in <code>src/main/java</code>:</li>
-        </ul>
-                <div class="example-code">
-            <h3>RESTEasy JAX-RS example</h3>
-            <p>REST is easy peasy with this Hello World RESTEasy resource.</p>
-            <p><code>@Path: <a href="/hello-resteasy" class="path-link" target="_blank">/hello-resteasy</a></code></p>
-            <p><a href="https://quarkus.io/guides/getting-started#the-jax-rs-resources" class="guide-link" target="_blank">Related guide section...</a></p>
-        </div>
-
+<body ng-app="PotatoManagement" ng-controller="PotatoManagementController">
+<div class="display">
+    <div class="header">
+        <form ng-submit="add()">
+            <h1> Yanaga's Truth Table Generator </h1>
+            <div class="instructions">
+                <ol>
+                    <li> For your operators use the words: and, or, not, iff, if and xor.</li>
+                    <li> For problem with multiple statements, separate them with commas: A and B, B or C</li>
+                    <li> Make good use of parenthesis: not A and B could be (not A) and B or not (A and B)</li>
+                    <li> This program <b>DOES NOT</b> know the statement hierarchy <b>YET</b>, so <b>USE PARENTHESIS!</b></li>
+                </ol>
+            </div>
+            <input type="text" ng-model="form.input" id="expression-input"> </input>
+            <input type="submit" value="Save" class="hide"/>
+        </form>
     </div>
-    <div class="right-column">
-        <div class="right-section">
-            <h3>Application</h3>
-            <ul>
-                <li>GroupId: <code>org.acme</code></li>
-                <li>ArtifactId: <code>code-with-quarkus</code></li>
-                <li>Version: <code>1.0.0-SNAPSHOT</code></li>
-                <li>Quarkus Version: <code>1.12.2.Final</code></li>
-            </ul>
-        </div>
-        <div class="right-section">
-            <h3>Do you like Quarkus?</h3>
-            <ul>
-                <li>Go give it a star on <a href="https://github.com/quarkusio/quarkus">GitHub</a>.</li>
-            </ul>
-        </div>
-        <div class="right-section">
-            <h3>Selected extensions guides</h3>
-            <ul>
-            </ul>
-        </div>
-        <div class="right-section">
-            <h3>More reading</h3>
-            <ul>
-                <li><a href="https://quarkus.io/guides/maven-tooling.html" target="_blank">Setup your IDE</a></li>
-                <li><a href="https://quarkus.io/guides/getting-started.html" target="_blank">Getting started</a></li>
-                <li><a href="https://quarkus.io/guides/" target="_blank">All guides</a></li>
-                <li><a href="https://quarkus.io" target="_blank">Quarkus Web Site</a></li>
-            </ul>
-        </div>
+    <div class="table-display">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th ng-repeat="s in header.header">
+                        {{s}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr ng-repeat="a in lines">
+                    <td ng-repeat="i in a.values track by $index">
+                        <div ng-class="{'color-red': i === false, 'color-green': i === true}" class="test"> {{i}} </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 </body>
