@@ -48,7 +48,18 @@ public class AndStatement implements Statement {
 
     private void setString(){
         if (rightStatement != null && leftStatement != null){
-            this.statement = String.format("%s and %s", this.leftStatement.getString(), this.rightStatement.getString());
+            if (leftStatement.isSingleVar() && !rightStatement.isSingleVar()) {
+                this.statement = String.format("%s and (%s)", this.leftStatement.getString(), this.rightStatement.getString());
+            }
+            else if (!leftStatement.isSingleVar() && rightStatement.isSingleVar()){
+                this.statement = String.format("(%s) and %s", this.leftStatement.getString(), this.rightStatement.getString());
+            }
+            else if (!leftStatement.isSingleVar() && !rightStatement.isSingleVar()) {
+                this.statement = String.format("(%s) and (%s)", this.leftStatement.getString(), this.rightStatement.getString());
+            }
+            else {
+                this.statement = String.format("%s and %s", this.leftStatement.getString(), this.rightStatement.getString());
+            }
         }
     }
 
@@ -76,6 +87,10 @@ public class AndStatement implements Statement {
         else {
             throw new RuntimeException("Error in statement construction!");
         }
+    }
+
+    public boolean isSingleVar(){
+        return false;
     }
 
 }

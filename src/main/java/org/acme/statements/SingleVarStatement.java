@@ -79,4 +79,7 @@ public class SingleVarStatement implements Statement {
         this.value = value;
     }
 
+    public boolean isSingleVar(){
+        return true;
+    }
 }

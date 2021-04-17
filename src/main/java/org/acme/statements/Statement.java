@@ -8,4 +8,6 @@ public interface Statement {
 
     public String getString();
 
+    public boolean isSingleVar();
+
 }

@@ -48,7 +48,18 @@ public class XorStatement implements Statement {
 
     private void setString(){
         if (rightStatement != null && leftStatement != null){
-            this.statement = String.format("%s xor %s", this.leftStatement.getString(), this.rightStatement.getString());
+            if (leftStatement.isSingleVar() && !rightStatement.isSingleVar()) {
+                this.statement = String.format("%s xor (%s)", this.leftStatement.getString(), this.rightStatement.getString());
+            }
+            else if (!leftStatement.isSingleVar() && rightStatement.isSingleVar()){
+                this.statement = String.format("(%s) xor %s", this.leftStatement.getString(), this.rightStatement.getString());
+            }
+            else if (!leftStatement.isSingleVar() && !rightStatement.isSingleVar()) {
+                this.statement = String.format("(%s) xor (%s)", this.leftStatement.getString(), this.rightStatement.getString());
+            }
+            else {
+                this.statement = String.format("%s xor %s", this.leftStatement.getString(), this.rightStatement.getString());
+            }
         }
     }
 
@@ -76,5 +87,9 @@ public class XorStatement implements Statement {
 
     private XorStatement(XorStatement.Builder builder) {
         this.leftStatement = builder.leftStatement;
+    }
+
+    public boolean isSingleVar(){
+        return false;
     }
 }

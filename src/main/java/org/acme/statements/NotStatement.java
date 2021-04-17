@@ -49,7 +49,16 @@ public class NotStatement implements Statement {
 
     private void setString(){
         if (rightStatement != null){
-            this.statement = String.format("not %s", this.rightStatement.getString());
+            if(this.rightStatement.isSingleVar()) {
+                this.statement = String.format("not %s", this.rightStatement.getString());
+            }
+            else {
+                this.statement = String.format("not (%s)", this.rightStatement.getString());
+            }
         }
+    }
+
+    public boolean isSingleVar(){
+        return false;
     }
 }

@@ -48,7 +48,18 @@ public class IfStatement implements Statement {
 
     private void setString(){
         if (rightStatement != null && leftStatement != null){
-            this.statement = String.format("%s if %s", this.leftStatement.getString(), this.rightStatement.getString());
+            if (leftStatement.isSingleVar() && !rightStatement.isSingleVar()) {
+                this.statement = String.format("%s if (%s)", this.leftStatement.getString(), this.rightStatement.getString());
+            }
+            else if (!leftStatement.isSingleVar() && rightStatement.isSingleVar()){
+                this.statement = String.format("(%s) if %s", this.leftStatement.getString(), this.rightStatement.getString());
+            }
+            else if (!leftStatement.isSingleVar() && !rightStatement.isSingleVar()) {
+                this.statement = String.format("(%s) if (%s)", this.leftStatement.getString(), this.rightStatement.getString());
+            }
+            else {
+                this.statement = String.format("%s if %s", this.leftStatement.getString(), this.rightStatement.getString());
+            }
         }
     }
 
@@ -83,5 +94,8 @@ public class IfStatement implements Statement {
         }
     }
 
+    public boolean isSingleVar(){
+        return false;
+    }
 }
 
