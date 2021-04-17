@@ -1,6 +1,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script type="text/javascript">
         var app = angular.module("PotatoManagement",[]);
@@ -70,29 +71,40 @@
     </script>
 </head>
 <body ng-app="PotatoManagement" ng-controller="PotatoManagementController">
-<form ng-submit="add()">
-    <h1> Type something</h1>
-    <input type="text" ng-model="form.input"> </input>
-    <input type="submit" value="Save"/>
-</form>
-<h1>List</h1>
-<div class="a">
-    <table>
-        <thead>
-            <tr>
-                <th ng-repeat="s in header.header">
-                    {{s}}
-                </th>
-            </tr>
-        </thead>
-        <tbody >
-            <tr ng-repeat="a in lines">
-                <td ng-repeat="i in a.values track by $index">
-                    <div ngStyle = "{'color': i? 'green' : 'red'}" class="test"> {{i}} </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<div class="display">
+    <div class="header">
+        <form ng-submit="add()">
+            <h1> Yanaga's Truth Table Generator </h1>
+            <div class="instructions">
+                <ol>
+                    <li> For your operators use the words: and, or, not, iff, if and xor.</li>
+                    <li> For problem with multiple statements, separate them with commas: A and B, B or C</li>
+                    <li> Make good use of parenthesis: not A and B could be (not A) and B or not (A and B)</li>
+                    <li> This program <b>DOES NOT</b> know the statement hierarchy <b>YET</b>, so <b>USE PARENTHESIS!</b></li>
+                </ol>
+            </div>
+            <input type="text" ng-model="form.input" id="expression-input"> </input>
+            <input type="submit" value="Save" class="hide"/>
+        </form>
+    </div>
+    <div class="table-display">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th ng-repeat="s in header.header">
+                        {{s}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr ng-repeat="a in lines">
+                    <td ng-repeat="i in a.values track by $index">
+                        <div ng-class="{'color-red': i === false, 'color-green': i === true}" class="test"> {{i}} </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>
