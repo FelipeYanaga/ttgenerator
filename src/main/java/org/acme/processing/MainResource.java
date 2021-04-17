@@ -2,22 +2,13 @@ package org.acme.processing;
 
 import org.acme.table.TruthTable;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path("/")
+@Path("/test")
 public class MainResource {
 
     private TruthTable table;
-
-    /*
-    Notes:
-
-    1) Fix the lines produced, as sometimes it produces more than it needs to
-     */
 
     public MainResource(){
     }
@@ -30,8 +21,8 @@ public class MainResource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public TruthTable add(Main peach){
-        this.table = new TruthTable(peach.input);
+    public TruthTable add(Main main){
+        this.table = new TruthTable(main.input);
         return table;
     }
 
