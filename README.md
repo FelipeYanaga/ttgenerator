@@ -20,7 +20,7 @@ In addition to that, I used a *Parse Tree* to evalute the statements. The parse 
 
 ## Where to go from here? 
 
-There is a lot to be added to this project. One of the features that need to be added is error mesasge handling. When users write something invalid, a "Internal Server Error," and so I need to start displaying proper error messages.
+There is a lot to be added to this project. One of the features that need to be added is error mesasge handling. When users write something invalid, a "Internal Server Error" occurs, and so I need to start displaying proper error messages in the webapge.
 
 I also need to add features to tell users how to correct their statements - This is something that Stanford's website does, but mine doesn't *YET*.
 
