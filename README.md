@@ -1,3 +1,10 @@
+# Truth Table Generator by Felipe Yanaga
+
+
+
+
+
+
 # code-with-quarkus project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
