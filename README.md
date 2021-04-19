@@ -14,7 +14,7 @@ The main structure used in this project was a *Push Down Automata (PDA)*. Propos
 
 In addition to that, I used a *Parse Tree* to evalute the statements. The parse tree was similar to this one: 
 
-*insert image*
+![Parse Tree](https://user-images.githubusercontent.com/69719875/115172024-5b28c500-a092-11eb-8b3f-67ce7235ae23.jpeg)
 
 *More details to be added later*
 
